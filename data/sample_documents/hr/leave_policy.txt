@@ -1,0 +1,69 @@
+ACME CORPORATION — LEAVE POLICY
+Document Reference: HR-POL-002 | Version 1.4 | Reviewed: March 2026
+
+1. PURPOSE
+This policy defines the leave entitlements, procedures, and responsibilities for all ACME Corporation employees across all employment categories.
+
+2. SCOPE
+This policy applies to all permanent full-time and part-time employees. Contract employees and interns are covered under separate agreements.
+
+3. LEAVE TYPES AND ENTITLEMENTS
+
+3.1 Annual Leave
+Full-time employees: 21 working days per calendar year.
+Part-time employees: Pro-rata based on contracted hours.
+Leave Year: January 1 to December 31.
+Maximum Carry-Over: 10 days to the next leave year.
+Leave Encashment: Not permitted except upon resignation or termination.
+
+3.2 Medical Leave
+Entitlement: 10 working days per year for outpatient sick leave.
+Hospitalisation Leave: Up to 60 days per year (inclusive of outpatient sick leave).
+Certification Required: For absences of 3 or more consecutive working days.
+
+3.3 Maternity Leave
+Duration: 16 consecutive weeks.
+Paid: Fully paid for employees with at least 6 months of service.
+Unpaid Extension: Up to 4 additional weeks may be requested.
+
+3.4 Paternity Leave
+Duration: 2 weeks within 16 weeks of the child's birth.
+Paid: Fully paid for employees with at least 6 months of service.
+
+3.5 Compassionate Leave
+Duration: Up to 5 working days for the death of an immediate family member.
+Immediate family is defined as: spouse, child, parent, or sibling.
+
+3.6 Study Leave
+Available for approved professional development courses: up to 5 days per year.
+Must be approved by HR and the relevant department head at least 21 days in advance.
+
+3.7 Unpaid Leave
+May be granted at management discretion for personal reasons.
+Maximum duration: 30 calendar days per year.
+
+4. LEAVE APPLICATION PROCESS
+
+Step 1: Employee submits leave request via the Employee Self-Service portal (portal.acme.internal).
+Step 2: Line manager receives email notification and reviews the request within 2 working days.
+Step 3: If approved, leave is deducted from the employee's entitlement balance.
+Step 4: If rejected, the manager must provide a written reason.
+Step 5: For medical leave, medical certificate must be submitted within 3 working days of returning to work.
+
+5. MANAGER RESPONSIBILITIES
+Managers must ensure adequate staffing coverage before approving leave requests.
+Managers must not approve leave that would reduce team capacity below 50 percent.
+Managers should review and respond to leave requests within 2 working days.
+
+6. LEAVE DURING NOTICE PERIOD
+Annual leave during the notice period must be mutually agreed upon.
+The company reserves the right to reject annual leave applications during the notice period.
+
+7. FORFEITURE
+Leave not taken and not carried over will be forfeited at the end of the leave year.
+Medical leave cannot be encashed or carried over.
+
+8. CONTACT FOR QUERIES
+Human Resources: hr@acme.internal
+Telephone: +1-800-ACME-HR1
+Portal Support: itsupport@acme.internal

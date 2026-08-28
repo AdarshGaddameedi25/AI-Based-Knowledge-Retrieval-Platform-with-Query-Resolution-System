@@ -1,0 +1,81 @@
+# ============================================================
+# AI-Based Knowledge Retrieval Platform — .gitignore
+# ============================================================
+
+# ── Environment & Secrets ─────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+.Python
+
+# ── Virtual Environments ──────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+.env/
+
+# ── IDE / Editor ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Testing ───────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+coverage.xml
+*.cover
+
+# ── Jupyter / IPython ─────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Logs ──────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Vector Store data (local persistent storage) ──────────
+data/vector_store/
+*.faiss
+*.index
+*.pkl
+
+# ── Uploaded / Processed Documents ───────────────────────
+data/uploads/
+data/processed/
+
+# ── mypy / type checking ──────────────────────────────────
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ── Build artefacts ───────────────────────────────────────
+*.pyc
+*.pyo

@@ -1,0 +1,61 @@
+CLOUD SECURITY BEST PRACTICES GUIDE
+ACME Technology Division | Document Ref: TECH-SEC-001 | Version 2.1 | 2026
+
+1. INTRODUCTION
+Cloud security refers to the set of controls, policies, and technologies designed to protect cloud-based systems, data, and infrastructure. As organisations increasingly adopt multi-cloud and hybrid-cloud architectures, ensuring the security of cloud environments has become a critical responsibility for technology teams.
+
+2. SHARED RESPONSIBILITY MODEL
+Cloud security operates on a shared responsibility model. The cloud service provider (CSP) is responsible for the security of the cloud infrastructure. The customer is responsible for security in the cloud, including data, identity, access management, and application security.
+
+3. IDENTITY AND ACCESS MANAGEMENT (IAM)
+3.1 Principle of Least Privilege
+Every user, application, and service should be granted only the minimum permissions required to perform their function. Excess permissions increase the attack surface.
+
+3.2 Multi-Factor Authentication (MFA)
+MFA requires users to verify their identity using two or more independent factors: something they know (password), something they have (authentication app or hardware token), or something they are (biometric). MFA significantly reduces the risk of account compromise from stolen or weak passwords.
+
+MFA vs. Password Authentication:
+- Password-only authentication relies on a single factor. If the password is stolen through phishing, credential stuffing, or brute force, the account is immediately compromised.
+- MFA adds a second verification layer. Even if a password is compromised, an attacker cannot access the account without the second factor.
+- Recommendation: Enforce MFA for all privileged accounts, administrative consoles, remote access, and sensitive data access.
+
+3.3 Role-Based Access Control (RBAC)
+Define roles based on job functions and assign permissions to roles, not individuals. Review and audit role assignments quarterly.
+
+4. DATA ENCRYPTION
+4.1 Encryption at Rest
+All data stored in cloud storage buckets, databases, and file systems must be encrypted using AES-256 or equivalent. Use cloud-native key management services (e.g., AWS KMS, Azure Key Vault) to manage encryption keys.
+
+4.2 Encryption in Transit
+All data transmitted between services, applications, and users must use TLS 1.2 or higher. Disable older protocols including SSL, TLS 1.0, and TLS 1.1.
+
+5. NETWORK SECURITY
+5.1 Virtual Private Cloud (VPC) Segmentation
+Segment cloud networks into separate VPCs or virtual networks by environment (production, staging, development) and function (web tier, application tier, database tier).
+
+5.2 Security Groups and Firewalls
+Restrict inbound and outbound traffic using security groups and network ACLs. Only allow traffic on required ports and protocols. Deny all traffic by default.
+
+5.3 Zero Trust Architecture
+Adopt a Zero Trust security model: never trust, always verify. Authenticate and authorise every access request regardless of network location.
+
+6. VULNERABILITY MANAGEMENT
+Conduct automated vulnerability scans of all cloud resources monthly. Remediate critical vulnerabilities within 72 hours, high within 14 days, and medium within 30 days.
+
+7. LOGGING AND MONITORING
+Enable audit logging across all cloud services. Centralise logs in a SIEM (Security Information and Event Management) system. Set up automated alerts for suspicious activity such as unusual login locations, privilege escalation, and large data exports.
+
+8. INCIDENT RESPONSE
+Maintain a cloud-specific incident response plan. Define roles, communication channels, escalation procedures, and recovery objectives. Test the plan with tabletop exercises at least twice per year.
+
+9. COMPLIANCE
+Ensure cloud deployments comply with applicable regulations including ISO 27001, SOC 2, GDPR, and industry-specific frameworks. Conduct annual compliance audits.
+
+10. SUMMARY OF KEY CONTROLS
+- Enforce MFA on all accounts.
+- Apply least-privilege IAM policies.
+- Encrypt all data at rest and in transit.
+- Segment networks and restrict traffic.
+- Monitor logs and alerts continuously.
+- Patch and remediate vulnerabilities promptly.
+- Test incident response procedures regularly.

@@ -1,0 +1,62 @@
+NETWORK SECURITY FUNDAMENTALS
+ACME Technology Division | Document Ref: TECH-SEC-002 | Version 1.3 | 2026
+
+1. INTRODUCTION
+Network security encompasses the policies, processes, and technologies used to detect, prevent, and respond to unauthorised access, misuse, modification, or denial of a computer network and network-accessible resources.
+
+2. FIREWALL MANAGEMENT
+A firewall is a network security device that monitors and controls incoming and outgoing network traffic based on predetermined security rules.
+
+Types of Firewalls:
+- Packet Filtering Firewall: Inspects packets at the network level and filters based on IP address, port, and protocol.
+- Stateful Inspection Firewall: Tracks the state of active connections and makes decisions based on context.
+- Application Layer Firewall (WAF): Inspects HTTP/HTTPS traffic and protects web applications from attacks such as SQL injection and XSS.
+- Next-Generation Firewall (NGFW): Combines traditional firewall features with deep packet inspection, intrusion prevention, and application awareness.
+
+Firewall Best Practices:
+- Implement a default-deny policy.
+- Log all blocked and allowed traffic.
+- Review and audit firewall rules quarterly.
+- Remove unused or overly permissive rules.
+
+3. INTRUSION DETECTION AND PREVENTION
+3.1 Intrusion Detection System (IDS)
+An IDS monitors network traffic for suspicious patterns or known attack signatures and generates alerts when threats are detected. It is passive — it does not block traffic.
+
+3.2 Intrusion Prevention System (IPS)
+An IPS monitors and actively blocks malicious traffic in real time. It sits inline on the network and can drop packets, reset connections, or block IP addresses.
+
+3.3 Deployment Recommendations
+Deploy IDS/IPS at network perimeters and at critical internal segment boundaries. Update signatures weekly. Review alerts daily.
+
+4. VIRTUAL PRIVATE NETWORK (VPN)
+A VPN creates an encrypted tunnel between the client and the corporate network, protecting data in transit over public networks. All remote employees must connect to corporate resources through the approved VPN client. Split tunnelling is not permitted for access to sensitive systems.
+
+5. NETWORK SEGMENTATION
+Divide the network into segments using VLANs, subnets, or software-defined networking (SDN). Isolate sensitive systems such as databases and financial applications in restricted segments. Control traffic between segments using ACLs and firewall rules.
+
+6. WIRELESS NETWORK SECURITY
+Use WPA3 encryption for all corporate wireless networks. Deploy a separate guest network with no access to internal resources. Disable WPS (Wi-Fi Protected Setup). Conduct wireless network scans quarterly to detect rogue access points.
+
+7. DNS SECURITY
+Enable DNSSEC to protect against DNS spoofing. Use DNS filtering services to block access to known malicious domains. Monitor DNS query logs for anomalies such as unusual query volumes or connections to rare TLDs.
+
+8. NETWORK ACCESS CONTROL (NAC)
+Implement NAC to ensure only authorised and compliant devices connect to the corporate network. Endpoints must meet security posture requirements (e.g., antivirus active, OS patches current) before being granted network access.
+
+9. MONITORING AND ANOMALY DETECTION
+Deploy a centralised network monitoring solution to collect NetFlow or IPFIX data. Establish baselines for normal traffic and configure alerts for deviations. Review traffic reports weekly.
+
+10. PENETRATION TESTING
+Conduct network penetration tests at least annually and after any significant infrastructure changes. Use both automated scanning tools and manual testing by qualified security professionals.
+
+11. SUMMARY
+Key network security controls include:
+- Stateful firewalls with default-deny rules.
+- IDS/IPS deployment at perimeter and internal boundaries.
+- Mandatory VPN for remote access.
+- Network segmentation by function and sensitivity.
+- WPA3 for wireless networks.
+- DNS filtering and DNSSEC.
+- NAC for device compliance enforcement.
+- Continuous monitoring and annual penetration testing.
