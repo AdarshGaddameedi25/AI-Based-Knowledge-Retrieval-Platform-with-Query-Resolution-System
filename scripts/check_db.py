@@ -1,6 +1,9 @@
 import os
-import psycopg2
+import sys
 from urllib.parse import urlparse
+import psycopg2
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config.settings import settings
 
 
