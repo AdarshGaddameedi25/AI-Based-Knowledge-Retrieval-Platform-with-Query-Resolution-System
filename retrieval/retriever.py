@@ -1,9 +1,13 @@
+import logging
 from dataclasses import dataclass, field
-from typing import Optional
-import openai
+from typing import Optional, List
+from sqlalchemy.orm import Session
 
 from config.settings import settings
+from ingestion.embeddings import EmbeddingService
 from retrieval.vector_store import VectorStore
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -15,46 +19,42 @@ class RetrievalResult:
     similarity_score: float
     rank: int
     chunk_index: int
+    page_number: Optional[int] = None
+    domain: Optional[str] = None
     metadata: dict = field(default_factory=dict)
 
 
 class Retriever:
-    def __init__(self, vector_store: VectorStore = None):
-        if not settings.openai_api_key:
-            raise EnvironmentError("OPENAI_API_KEY is not set.")
-        self._client = openai.OpenAI(api_key=settings.openai_api_key)
-        self._store = vector_store or VectorStore()
-
-    def _embed_query(self, query: str) -> list[float]:
-        response = self._client.embeddings.create(
-            model=settings.openai_embedding_model,
-            input=query,
-        )
-        return response.data[0].embedding
+    def __init__(self):
+        self._embedder = EmbeddingService()
+        self._store = VectorStore()
 
     def retrieve(
         self,
         query: str,
+        db: Session,
         top_k: int = None,
-        filter_metadata: Optional[dict] = None,
-    ) -> list[RetrievalResult]:
+    ) -> List[RetrievalResult]:
         top_k = top_k or settings.top_k_results
-        query_embedding = self._embed_query(query)
-        hits = self._store.similarity_search(query_embedding, top_k=top_k, filter_metadata=filter_metadata)
+        logger.info(f"Embedding query: {query[:80]}")
+        query_embedding = self._embedder.generate_embedding(query)
 
-        results = []
-        for hit in hits:
-            meta = hit.get("metadata", {})
-            results.append(
-                RetrievalResult(
-                    chunk_id=hit["chunk_id"],
-                    document_id=meta.get("document_id", ""),
-                    source_file=meta.get("source_file", ""),
-                    text=meta.get("text", ""),
-                    similarity_score=hit["similarity_score"],
-                    rank=hit["rank"],
-                    chunk_index=int(meta.get("chunk_index", 0)),
-                    metadata=meta,
-                )
+        hits = self._store.similarity_search(db, query_embedding, top_k=top_k)
+        top_score = f"{hits[0]['similarity_score']:.4f}" if hits else "N/A"
+        logger.info(f"Retrieved {len(hits)} chunks, top score: {top_score}")
+
+        return [
+            RetrievalResult(
+                chunk_id=h["chunk_id"],
+                document_id=h["document_id"],
+                source_file=h["source_file"],
+                text=h["text"],
+                similarity_score=h["similarity_score"],
+                rank=h["rank"],
+                chunk_index=h["chunk_index"],
+                page_number=h.get("page_number"),
+                domain=h.get("domain"),
+                metadata=h.get("metadata", {}),
             )
-        return results
+            for h in hits
+        ]

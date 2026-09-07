@@ -1,7 +1,8 @@
 import os
 import uuid
+import hashlib
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from dataclasses import dataclass, field
 
 from ingestion.pdf_loader import PDFLoader
@@ -16,9 +17,11 @@ class DocumentRecord:
     file_name: str
     file_type: str
     file_size: int
+    file_hash: str
     upload_date: str
     status: str
     text: str
+    pages: Optional[List] = None
     metadata: dict = field(default_factory=dict)
 
 
@@ -26,12 +29,19 @@ class DocumentLoader:
     SUPPORTED_TYPES = {".pdf", ".docx", ".txt", ".csv"}
 
     def __init__(self):
+        self._pdf = PDFLoader()
         self._loaders = {
-            ".pdf": PDFLoader(),
             ".docx": DOCXLoader(),
             ".txt": TXTLoader(),
             ".csv": CSVLoader(),
         }
+
+    def _compute_hash(self, file_path: str) -> str:
+        h = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(8192), b""):
+                h.update(chunk)
+        return h.hexdigest()
 
     def load(self, file_path: str) -> DocumentRecord:
         if not os.path.exists(file_path):
@@ -39,23 +49,32 @@ class DocumentLoader:
 
         ext = os.path.splitext(file_path)[1].lower()
         if ext not in self.SUPPORTED_TYPES:
-            raise ValueError(f"Unsupported file type: {ext}. Supported: {self.SUPPORTED_TYPES}")
+            raise ValueError(f"Unsupported file type: {ext}")
 
-        loader = self._loaders[ext]
-        text = loader.extract(file_path)
+        file_hash = self._compute_hash(file_path)
+
+        if ext == ".pdf":
+            pages = self._pdf.extract_pages(file_path)
+            text = "\n".join(t for _, t in pages)
+        else:
+            loader = self._loaders[ext]
+            text = loader.extract(file_path)
+            pages = None
 
         return DocumentRecord(
             document_id=str(uuid.uuid4()),
             file_name=os.path.basename(file_path),
             file_type=ext.lstrip(".").upper(),
             file_size=os.path.getsize(file_path),
+            file_hash=file_hash,
             upload_date=datetime.utcnow().isoformat(),
             status="loaded",
             text=text,
+            pages=pages,
             metadata={"source_path": file_path},
         )
 
-    def load_directory(self, directory: str) -> list[DocumentRecord]:
+    def load_directory(self, directory: str) -> List[DocumentRecord]:
         records = []
         for root, _, files in os.walk(directory):
             for fname in files:

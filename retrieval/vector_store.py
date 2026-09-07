@@ -1,91 +1,65 @@
-import os
-from typing import Optional
-import chromadb
-from chromadb.config import Settings as ChromaSettings
+import logging
+from typing import Optional, List
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-from config.settings import settings
+from backend.db.models import Embedding, DocumentChunk, Document
+
+logger = logging.getLogger(__name__)
 
 
 class VectorStore:
-    def __init__(self):
-        os.makedirs(settings.chroma_persist_dir, exist_ok=True)
-        self._client = chromadb.PersistentClient(
-            path=settings.chroma_persist_dir,
-            settings=ChromaSettings(anonymized_telemetry=False),
-        )
-        self._collection = self._client.get_or_create_collection(
-            name=settings.chroma_collection_name,
-            metadata={"hnsw:space": "cosine"},
-        )
-
-    def add_chunks(self, embedding_records: list) -> None:
-        if not embedding_records:
-            return
-
-        ids = [r.chunk_id for r in embedding_records]
-        embeddings = [r.embedding for r in embedding_records]
-        documents = []
-        metadatas = []
-
-        for r in embedding_records:
-            meta = {
-                "document_id": r.document_id,
-                "chunk_index": r.chunk_index,
-                "source_file": r.source_file,
-                "model": r.model,
-            }
-            if r.page_number is not None:
-                meta["page_number"] = r.page_number
-            meta.update({k: str(v) for k, v in r.metadata.items()})
-            metadatas.append(meta)
-            documents.append("")
-
-        self._collection.add(
-            ids=ids,
-            embeddings=embeddings,
-            documents=documents,
-            metadatas=metadatas,
-        )
-
     def similarity_search(
         self,
-        query_embedding: list[float],
-        top_k: int = None,
-        filter_metadata: Optional[dict] = None,
-    ) -> list[dict]:
-        top_k = top_k or settings.top_k_results
-        kwargs = {
-            "query_embeddings": [query_embedding],
-            "n_results": top_k,
-            "include": ["metadatas", "distances", "documents"],
-        }
-        if filter_metadata:
-            kwargs["where"] = filter_metadata
+        db: Session,
+        query_embedding: List[float],
+        top_k: int = 5,
+    ) -> List[dict]:
+        embedding_str = "[" + ",".join(str(v) for v in query_embedding) + "]"
 
-        results = self._collection.query(**kwargs)
+        sql = text("""
+            SELECT
+                e.chunk_id,
+                e.embedding_model,
+                dc.document_id,
+                dc.text,
+                dc.chunk_index,
+                dc.page_number,
+                dc.chunk_metadata,
+                d.file_name,
+                d.domain,
+                1 - (e.embedding <=> CAST(:embedding AS vector)) AS similarity_score
+            FROM embeddings e
+            JOIN document_chunks dc ON e.chunk_id = dc.chunk_id
+            JOIN documents d ON dc.document_id = d.document_id
+            WHERE d.status = 'indexed'
+            ORDER BY e.embedding <=> CAST(:embedding AS vector)
+            LIMIT :top_k
+        """)
 
-        hits = []
-        ids = results.get("ids", [[]])[0]
-        distances = results.get("distances", [[]])[0]
-        metadatas = results.get("metadatas", [[]])[0]
+        rows = db.execute(sql, {"embedding": embedding_str, "top_k": top_k}).fetchall()
 
-        for i, chunk_id in enumerate(ids):
-            hits.append(
-                {
-                    "chunk_id": chunk_id,
-                    "similarity_score": 1 - distances[i],
-                    "rank": i + 1,
-                    "metadata": metadatas[i],
-                }
-            )
-        return hits
+        results = []
+        for rank, row in enumerate(rows, start=1):
+            results.append({
+                "chunk_id": row.chunk_id,
+                "document_id": row.document_id,
+                "source_file": row.file_name,
+                "text": row.text,
+                "similarity_score": float(row.similarity_score),
+                "rank": rank,
+                "chunk_index": row.chunk_index,
+                "page_number": row.page_number,
+                "domain": row.domain,
+                "metadata": dict(row.chunk_metadata) if row.chunk_metadata else {},
+            })
 
-    def count(self) -> int:
-        return self._collection.count()
+        return results
 
-    def delete_collection(self) -> None:
-        self._client.delete_collection(settings.chroma_collection_name)
-        self._collection = self._client.get_or_create_collection(
-            name=settings.chroma_collection_name,
-            metadata={"hnsw:space": "cosine"},
-        )
+    def count_chunks(self, db: Session) -> int:
+        from sqlalchemy import func
+        return db.query(func.count(Embedding.embedding_id)).scalar()
+
+    def count_documents(self, db: Session) -> int:
+        from sqlalchemy import func
+        return db.query(func.count(Document.document_id)).filter(Document.status == "indexed").scalar()

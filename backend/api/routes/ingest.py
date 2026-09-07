@@ -1,61 +1,64 @@
 import os
+import logging
 import tempfile
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 
-from ingestion.document_loader import DocumentLoader
-from ingestion.text_cleaner import TextCleaner
-from ingestion.chunking import TextChunker
-from ingestion.embeddings import EmbeddingService
-from retrieval.vector_store import VectorStore
+from backend.db.base import get_db
+from backend.services.ingestion_service import IngestionService
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
-loader = DocumentLoader()
-cleaner = TextCleaner()
-chunker = TextChunker()
-store = VectorStore()
+ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt", ".csv"}
+MAX_FILE_SIZE = 50 * 1024 * 1024
+
+_service = IngestionService()
 
 
-@router.post("/ingest")
-async def ingest_document(file: UploadFile = File(...)):
-    allowed = {".pdf", ".docx", ".txt", ".csv"}
-    ext = os.path.splitext(file.filename)[1].lower()
-    if ext not in allowed:
-        raise HTTPException(status_code=400, detail=f"Unsupported file type: {ext}")
+import shutil
 
-    try:
-        embedder = EmbeddingService()
-    except EnvironmentError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+@router.post("/documents/upload")
+def upload_document(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    original_name = os.path.basename(file.filename or "upload")
+    ext = os.path.splitext(original_name)[1].lower()
+
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {ext}. Allowed: {sorted(ALLOWED_EXTENSIONS)}")
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
-        content = await file.read()
-        tmp.write(content)
+        shutil.copyfileobj(file.file, tmp)
         tmp_path = tmp.name
 
-    try:
-        doc = loader.load(tmp_path)
-        doc.file_name = file.filename
-        clean_text = cleaner.clean(doc.text)
-        chunks = chunker.chunk(clean_text, doc.document_id, metadata={"source_file": file.filename})
-        embeddings = embedder.embed_chunks(chunks, source_file=file.filename)
-
-        for emb, chunk in zip(embeddings, chunks):
-            emb.metadata["text"] = chunk.text
-
-        store.add_chunks(embeddings)
-    finally:
+    file_size = os.path.getsize(tmp_path)
+    if file_size == 0:
         os.unlink(tmp_path)
+        raise HTTPException(status_code=400, detail="File is empty.")
 
-    return JSONResponse({
-        "document_id": doc.document_id,
-        "file_name": file.filename,
-        "chunks_created": len(chunks),
-        "status": "indexed",
-    })
+    if file_size > MAX_FILE_SIZE:
+        os.unlink(tmp_path)
+        raise HTTPException(status_code=413, detail=f"File exceeds maximum size of {MAX_FILE_SIZE // (1024*1024)} MB.")
+
+    try:
+        result = _service.ingest_file(tmp_path, db=db, original_filename=original_name)
+    except Exception as e:
+        logger.error(f"Ingestion error for {original_name}: {e}")
+        raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
+    finally:
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+    return JSONResponse(result)
 
 
-@router.get("/documents/count")
-def document_count():
-    return {"total_chunks_indexed": store.count()}
+@router.get("/documents")
+def list_documents(db: Session = Depends(get_db)):
+    try:
+        return _service.list_documents(db)
+    except Exception as e:
+        logger.error(f"Error listing documents: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

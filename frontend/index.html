@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-QRS — AI-Based Knowledge Retrieval Platform & Query Resolution System</title>
+  <meta name="description" content="A physical intelligence laboratory for organizational knowledge. Production RAG platform with pgvector, multi-agent orchestration, and grounded query resolution." />
+  
+  <!-- Modern Expressive Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for Interactive 3D Knowledge Core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       AI-QRS CORE DESIGN SYSTEM
+       Theme: Warm Ivory / Paper Laboratory
+       ========================================================================== */
+    :root {
+      /* Backgrounds & Base */
+      --bg-base: #F7F4EC;
+      --bg-surface: #FFFFFF;
+      --bg-surface-subtle: #F2EFE6;
+      --bg-surface-elevated: #FFFFFF;
+      --bg-card-hover: #FAF8F2;
+
+      /* Ink & Typography */
+      --ink-primary: #171815;
+      --ink-secondary: #5A5D54;
+      --ink-tertiary: #84877D;
+      --ink-muted: #B3B5AC;
+
+      /* Intent & Functional Accents */
+      --accent-lime: #C9FF3F;          /* Active intelligence / Primary action */
+      --accent-lime-dark: #A5DE16;
+      --accent-aqua: #6FE8D2;          /* Semantic relationships / Vector space */
+      --accent-aqua-subtle: #E3FAF5;
+      --accent-coral: #FF806C;         /* Knowledge gap / Ambiguity warning */
+      --accent-coral-subtle: #FFF0ED;
+      --accent-yellow: #FFD95A;        /* Highlighted evidence / Key insight */
+      --accent-periwinkle: #8CA8FF;    /* Secondary system state */
+
+      /* Borders & Shadows */
+      --border-subtle: #E8E4D8;
+      --border-medium: #DBD6C7;
+      --border-strong: #171815;
+      --shadow-sm: 0 2px 4px rgba(23, 24, 21, 0.04), 0 1px 2px rgba(23, 24, 21, 0.03);
+      --shadow-md: 0 8px 24px rgba(23, 24, 21, 0.06), 0 2px 6px rgba(23, 24, 21, 0.04);
+      --shadow-lg: 0 16px 40px rgba(23, 24, 21, 0.08), 0 4px 12px rgba(23, 24, 21, 0.04);
+      --shadow-float: 0 24px 64px -12px rgba(23, 24, 21, 0.12);
+
+      /* Layout & Spacing */
+      --max-width: 1360px;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--ink-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Subtle Architectural Grid Background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(201, 255, 63, 0.12) 0%, transparent 50%),
+        linear-gradient(to right, rgba(219, 214, 199, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(219, 214, 199, 0.25) 1px, transparent 1px);
+      background-size: 100% 100%, 64px 64px, 64px 64px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==========================================================================
+       TYPOGRAPHY
+       ========================================================================== */
+    h1, h2, h3, h4 {
+      font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      color: var(--ink-primary);
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1rem;
+    }
+
+    .section-eyebrow .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent-lime);
+    }
+
+    /* ==========================================================================
+       NAVIGATION BAR
+       ========================================================================== */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(247, 244, 236, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(219, 214, 199, 0.7);
+      padding: 0.85rem 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--ink-primary);
+    }
+
+    .brand-symbol {
+      width: 36px;
+      height: 36px;
+      background: var(--ink-primary);
+      color: var(--accent-lime);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: -0.05em;
+      box-shadow: 0 3px 8px rgba(23, 24, 21, 0.18);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .brand-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--ink-secondary);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-top: 3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .nav-links a:hover {
+      color: var(--ink-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .system-health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      color: var(--ink-secondary);
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-lime);
+      box-shadow: 0 0 0 2px rgba(201, 255, 63, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0.65rem 1.35rem;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition-smooth);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--ink-primary);
+      color: #FFFFFF;
+      border-color: var(--ink-primary);
+      box-shadow: 0 4px 12px rgba(23, 24, 21, 0.12);
+    }
+
+    .btn-primary:hover {
+      background: #2a2c26;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(23, 24, 21, 0.18);
+    }
+
+    .btn-accent {
+      background: var(--accent-lime);
+      color: var(--ink-primary);
+      border-color: var(--accent-lime-dark);
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(201, 255, 63, 0.35);
+    }
+
+    .btn-accent:hover {
+      background: #bbee2e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(201, 255, 63, 0.45);
+    }
+
+    .btn-outline {
+      background: var(--bg-surface);
+      color: var(--ink-primary);
+      border-color: var(--border-medium);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       HERO SECTION — 3D KNOWLEDGE CORE
+       ========================================================================== */
+    section.hero-section {
+      padding: 3.5rem 0 4rem;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 580px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      line-height: 1.02;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.4rem;
+      color: var(--ink-primary);
+    }
+
+    .hero-title .highlight-aqua {
+      background: linear-gradient(120deg, #1ea389, #4ac4b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .hero-description {
+      font-size: 1.08rem;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Live Telemetry Metric Badges */
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .metric-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink-primary);
+      line-height: 1.1;
+    }
+
+    .metric-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--ink-tertiary);
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* 3D Knowledge Core Container */
+    .hero-visual-wrapper {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #three-canvas-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0; left: 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    /* Floating UI elements surrounding 3D Core */
+    .hero-floating-card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      box-shadow: var(--shadow-md);
+      z-index: 10;
+      pointer-events: auto;
+      transition: var(--transition-smooth);
+    }
+
+    .hero-floating-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-top-right {
+      top: 1rem;
+      right: 0rem;
+      max-width: 230px;
+    }
+
+    .card-bottom-right {
+      bottom: 1.25rem;
+      right: 1.5rem;
+      max-width: 320px;
+      background: #FFFFFF;
+      border: 2px solid var(--ink-primary);
+    }
+
+    .interactive-mini-prompt {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface-subtle);
+      border-radius: var(--radius-full);
+      padding: 0.35rem 0.5rem 0.35rem 0.85rem;
+      margin-top: 0.6rem;
+    }
+
+    .interactive-mini-prompt input {
+      border: none;
+      background: transparent;
+      font-size: 0.78rem;
+      font-family: inherit;
+      color: var(--ink-primary);
+      width: 100%;
+      outline: none;
+    }
+
+    .interactive-mini-prompt button {
+      background: var(--accent-lime);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition-smooth);
+    }
+
+    .interactive-mini-prompt button:hover {
+      transform: scale(1.08);
+      background: #bbee2e;
+    }
+
+    .pipeline-step-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--ink-tertiary);
+    }
+
+    .pipeline-step-flow span.active {
+      color: var(--ink-primary);
+      background: var(--accent-aqua-subtle);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-aqua);
+    }
+
+    /* Raycasting 3D Tooltip */
+    #core-3d-tooltip {
+      position: absolute;
+      display: none;
+      background: var(--ink-primary);
+      color: #FFFFFF;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      pointer-events: none;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+      border-left: 3px solid var(--accent-lime);
+    }
+
+    /* ==========================================================================
+       SECTION 01: KNOWLEDGE UNIVERSE
+       ========================================================================== */
+    section.section-universe {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .universe-visual {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    .file-type-chips {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .file-chip {
+      width: 70px;
+      height: 85px;
+      background: var(--bg-surface-subtle);
+      border: 1.5px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .file-chip:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .file-chip.pdf { color: #E53E3E; border-bottom: 3px solid #E53E3E; }
+    .file-chip.docx { color: #2B6CB0; border-bottom: 3px solid #2B6CB0; }
+    .file-chip.txt { color: #4A5568; border-bottom: 3px solid #4A5568; }
+    .file-chip.csv { color: #38A169; border-bottom: 3px solid #38A169; }
+
+    .ingestion-pipeline-timeline {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+      background: var(--bg-base);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .pipeline-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0.6rem 0.25rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition-smooth);
+    }
+
+    .pipeline-stage:hover {
+      border-color: var(--accent-aqua);
+      background: var(--accent-aqua-subtle);
+      transform: translateY(-2px);
+    }
+
+    .pipeline-stage-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--ink-tertiary);
+    }
+
+    .pipeline-stage-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-top: 0.2rem;
+      color: var(--ink-primary);
+    }
+
+    /* ==========================================================================
+       SECTION 02: DOCUMENT INGESTION (REAL LIVE COMPONENT)
+       ========================================================================== */
+    section.section-ingestion {
+      padding: 5rem 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .ingestion-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      margin-top: 2.5rem;
+    }
+
+    /* Dropzone card */
+    .dropzone-card {
+      background: var(--bg-surface-subtle);
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .dropzone-card.drag-active {
+      background: var(--accent-aqua-subtle);
+      border-color: #0d9488;
+      transform: scale(1.01);
+    }
+
+    .dropzone-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dropzone-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .dropzone-subtitle {
+      font-size: 0.88rem;
+      color: var(--ink-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    #file-upload-input {
+      display: none;
+    }
+
+    .upload-status-box {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .upload-status-box.info {
+      background: var(--accent-aqua-subtle);
+      border: 1px solid var(--accent-aqua);
+      color: #0f766e;
+      display: block;
+    }
+
+    .upload-status-box.success {
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      color: #065f46;
+      display: block;
+    }
+
+    .upload-status-box.error {
+      background: var(--accent-coral-subtle);
+      border: 1px solid var(--accent-coral);
+      color: #b91c1c;
+      display: block;
+    }
+
+    /* Live Indexed Documents List */
+    .indexed-docs-container {
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .indexed-docs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .indexed-docs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .doc-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      transition: var(--transition-smooth);
+    }
+
+    .doc-row-item:hover {
+      border-color: var(--border-strong);
+      transform: translateX(3px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .doc-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .badge-filetype {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .badge-PDF { background: #fee2e2; color: #991b1b; }
+    .badge-DOCX { background: #dbeafe; color: #1e40af; }
+    .badge-TXT { background: #f3f4f6; color: #374151; }
+    .badge-CSV { background: #dcfce7; color: #166534; }
+
+    .doc-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      max-width: 240px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .doc-stats {
+      font-size: 0.75rem;
+      color: var(--ink-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-indexed-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* ==========================================================================
+       SECTION 03: RAG ARCHITECTURE VISUALIZATION
+       ========================================================================== */
+    section.section-rag-engine {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .rag-pipeline-interactive {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      margin-top: 2.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .rag-nodes-track {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1rem;
+      position: relative;
+      align-items: center;
+    }
+
+    .rag-node-card {
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 0.85rem;
+      text-align: center;
+      position: relative;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+    }
+
+    .rag-node-card:hover, .rag-node-card.active {
+      border-color: var(--border-strong);
+      background: var(--accent-lime);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .rag-node-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rag-node-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--ink-primary);
+    }
+
+    .rag-node-desc {
+      font-size: 0.65rem;
+      color: var(--ink-secondary);
+      margin-top: 0.35rem;
+      line-height: 1.3;
+    }
+
+    /* ==========================================================================
+       SECTION 04: ACTUAL LIVE QUERY WORKSPACE
+       ========================================================================== */
+    section.section-workspace {
+      padding: 5rem 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      min-height: 600px;
+    }
+
+    .workspace-panel {
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Left Panel: Sources & Parameters */
+    .panel-sources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+
+    .source-filter-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .source-filter-item:hover {
+      border-color: var(--border-strong);
+    }
+
+    .param-group {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .param-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    select.param-select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.85rem;
+      background: var(--bg-surface);
+      outline: none;
+    }
+
+    /* Center Panel: Interactive Query & Answer */
+    .workspace-center {
+      background: var(--bg-surface);
+      border: 2px solid var(--border-strong);
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .query-input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .query-textarea {
+      width: 100%;
+      height: 90px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      color: var(--ink-primary);
+      background: var(--bg-surface-subtle);
+      resize: none;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .query-textarea:focus {
+      border-color: var(--ink-primary);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(201, 255, 63, 0.4);
+    }
+
+    .query-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sample-chips-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .sample-chip {
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-medium);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .sample-chip:hover {
+      background: var(--accent-lime);
+      border-color: var(--border-strong);
+    }
+
+    /* Live Answer Output Box */
+    .answer-output-area {
+      flex: 1;
+      padding-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .answer-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge-intent {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--accent-aqua-subtle);
+      color: #0f766e;
+      border: 1px solid var(--accent-aqua);
+    }
+
+    .answer-text-content {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink-primary);
+      background: var(--bg-base);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      border: 1px solid var(--border-subtle);
+      flex: 1;
+      white-space: pre-wrap;
+    }
+
+    .answer-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3.5rem 1rem;
+      color: var(--ink-tertiary);
+      gap: 0.75rem;
+    }
+
+    /* Right Panel: Retrieval Trace */
+    .trace-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-top: 1rem;
+      overflow-y: auto;
+      max-height: 520px;
+    }
+
+    .trace-item-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-smooth);
+    }
+
+    .trace-item-card:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .trace-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .trace-rank-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 800;
+      background: var(--ink-primary);
+      color: var(--accent-lime);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .trace-score-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-surface-subtle);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0.4rem 0;
+    }
+
+    .trace-score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      border-radius: 3px;
+    }
+
+    .trace-snippet {
+      font-size: 0.75rem;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-top: 0.4rem;
+    }
+
+    /* ==========================================================================
+       SECTION 05: MULTI-AGENT ORCHESTRATION
+       ========================================================================== */
+    section.section-agents {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .agent-orchestration-diagram {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .orchestrator-core {
+      width: 130px;
+      height: 130px;
+      background: var(--ink-primary);
+      color: var(--accent-lime);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(23, 24, 21, 0.25);
+      border: 4px solid var(--accent-lime);
+      z-index: 5;
+    }
+
+    .agents-ring {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+      margin-top: 2.5rem;
+    }
+
+    .agent-card {
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition-smooth);
+    }
+
+    .agent-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .agent-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .agent-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .agent-desc {
+      font-size: 0.72rem;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       SECTION 08: KNOWLEDGE GAP & HALLUCINATION PREVENTION
+       ========================================================================== */
+    section.section-knowledge-gap {
+      padding: 5rem 0;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .gap-demo-container {
+      background: var(--bg-base);
+      border: 2px solid var(--accent-coral);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .gap-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #991b1b;
+      background: var(--accent-coral-subtle);
+      border: 1px solid var(--accent-coral);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-full);
+      margin-bottom: 1rem;
+    }
+
+    /* ==========================================================================
+       SECTION 10: VOICE INTERACTION (WEB SPEECH API)
+       ========================================================================== */
+    section.section-voice {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .voice-interactive-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      padding: 3rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mic-button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent-aqua);
+      border: 3px solid #0d9488;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(111, 232, 210, 0.4);
+      transition: var(--transition-smooth);
+      margin-bottom: 1.5rem;
+    }
+
+    .mic-button.recording {
+      background: var(--accent-coral);
+      border-color: #dc2626;
+      animation: pulse-coral 1.5s infinite;
+    }
+
+    @keyframes pulse-coral {
+      0% { box-shadow: 0 0 0 0 rgba(255, 128, 108, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(255, 128, 108, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 128, 108, 0); }
+    }
+
+    .audio-waveform {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 36px;
+      margin: 1rem 0;
+    }
+
+    .waveform-bar {
+      width: 4px;
+      background: var(--ink-primary);
+      border-radius: 2px;
+      height: 8px;
+      transition: height 0.15s ease;
+    }
+
+    /* ==========================================================================
+       FOOTER & FINAL CTA
+       ========================================================================== */
+    footer.site-footer {
+      background: var(--ink-primary);
+      color: #FFFFFF;
+      padding: 4.5rem 0 2.5rem;
+      border-top: 1px solid #2a2c26;
+    }
+
+    .footer-cta-block {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 4rem;
+    }
+
+    .footer-cta-block h2 {
+      color: #FFFFFF;
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-cta-block p {
+      color: #A3A69B;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #2d3028;
+      padding-top: 2rem;
+      font-size: 0.8rem;
+      color: #84877D;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(23, 24, 21, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--ink-primary);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1100px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .workspace-layout { grid-template-columns: 1fr; }
+      .rag-nodes-track { grid-template-columns: repeat(3, 1fr); }
+      .agents-ring { grid-template-columns: repeat(2, 1fr); }
+      .ingestion-workspace-grid { grid-template-columns: 1fr; }
+      .gap-demo-container { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       SITE HEADER & NAVIGATION
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="#" class="brand-logo">
+        <div class="brand-symbol">Q</div>
+        <div class="brand-text">
+          <span class="brand-name">AI-QRS</span>
+          <span class="brand-tag">Knowledge Retrieval Platform</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#universe">Universe</a></li>
+        <li><a href="#ingestion">Ingestion</a></li>
+        <li><a href="#rag-engine">RAG Pipeline</a></li>
+        <li><a href="#workspace">Query Workspace</a></li>
+        <li><a href="#agents">Multi-Agent</a></li>
+        <li><a href="#voice">Voice API</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div id="system-health-badge" class="system-health-pill">
+          <span class="status-indicator"></span>
+          <span id="health-label">System Active · pgvector v0.8.6</span>
+        </div>
+        <a href="#workspace" class="btn btn-outline">Explore Space</a>
+        <a href="#ingestion" class="btn btn-primary">Upload Docs ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========================================================================
+         HERO SECTION: 3D KNOWLEDGE CORE
+         ======================================================================== -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-grid">
+          
+          <!-- Hero Copy -->
+          <div class="hero-content">
+            <div class="section-eyebrow">
+              <span class="dot"></span>
+              AI KNOWLEDGE RETRIEVAL / QUERY RESOLUTION
+            </div>
+            
+            <h1 class="hero-title">
+              Make your<br />
+              <span class="highlight-aqua">knowledge</span><br />
+              alive.
+            </h1>
+
+            <p class="hero-description">
+              Turn your organization's documents into a searchable intelligence layer — grounded in evidence, connected to context, and designed to know when the answer isn't there.
+            </p>
+
+            <div class="hero-cta-group">
+              <a href="#workspace" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 0.95rem;">
+                Explore the Knowledge &rarr;
+              </a>
+              <a href="#ingestion" class="btn btn-outline" style="padding: 0.85rem 1.75rem; font-size: 0.95rem;">
+                Upload Documents
+              </a>
+            </div>
+
+            <!-- Live Telemetry Counters (connected to /api/health) -->
+            <div class="hero-metrics">
+              <div class="metric-card">
+                <span class="metric-value" id="metric-doc-count">--</span>
+                <span class="metric-label">DOCUMENTS</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-value" id="metric-chunk-count">--</span>
+                <span class="metric-label">KNOWLEDGE CHUNKS</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-value" id="metric-dim-count">384-d</span>
+                <span class="metric-label">PGVECTOR DENSE</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-value">5</span>
+                <span class="metric-label">AI AGENTS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero 3D Interactive Canvas & Floaters -->
+          <div class="hero-visual-wrapper">
+            <div id="three-canvas-container"></div>
+
+            <!-- 3D Raycasting Tooltip -->
+            <div id="core-3d-tooltip"></div>
+
+            <!-- Top Right Floating Knowledge Card -->
+            <div class="hero-floating-card card-top-right">
+              <span class="mono" style="color: var(--ink-tertiary);">KNOWLEDGE CORE</span>
+              <p style="font-size: 0.82rem; font-weight: 700; margin-top: 0.25rem;">
+                From static documents to living intelligence in seconds.
+              </p>
+            </div>
+
+            <!-- Bottom Right Mini Interactive RAG Prompt -->
+            <div class="hero-floating-card card-bottom-right">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="mono" style="color: var(--ink-secondary);">Ask the knowledge base…</span>
+                <span class="badge-indexed-status">Grounded</span>
+              </div>
+
+              <div class="interactive-mini-prompt">
+                <input type="text" id="mini-hero-input" value="What is the leave policy for eligible employees?" />
+                <button type="button" onclick="triggerHeroMiniQuery()" title="Execute query">→</button>
+              </div>
+
+              <div class="pipeline-step-flow">
+                <span class="active">Understand</span>
+                <span>&rarr;</span>
+                <span class="active">Search</span>
+                <span>&rarr;</span>
+                <span class="active">Retrieve</span>
+                <span>&rarr;</span>
+                <span class="active">Generate</span>
+                <span>&rarr;</span>
+                <span class="active">Cite</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 01: KNOWLEDGE UNIVERSE
+         ======================================================================== -->
+    <section id="universe" class="section-universe">
+      <div class="container">
+        <div class="grid-2col">
+          <div>
+            <div class="section-eyebrow">
+              <span class="dot"></span>
+              KNOWLEDGE INGESTION ENGINE
+            </div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.25rem; line-height: 1.1;">
+              Not a folder.<br />A knowledge universe.
+            </h2>
+            <p style="color: var(--ink-secondary); font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">
+              Upload, process and transform your organizational documents into structured, searchable intelligence. Rather than losing knowledge in folders, documents are decomposed into semantic particles and organized into high-dimensional vector clusters.
+            </p>
+            <a href="#ingestion" class="btn btn-outline">Explore Ingestion &rarr;</a>
+          </div>
+
+          <div class="universe-visual">
+            <div class="file-type-chips">
+              <div class="file-chip pdf">
+                <span style="font-size: 1.2rem;">📄</span>
+                <span>PDF</span>
+              </div>
+              <div class="file-chip docx">
+                <span style="font-size: 1.2rem;">📝</span>
+                <span>DOCX</span>
+              </div>
+              <div class="file-chip txt">
+                <span style="font-size: 1.2rem;">📑</span>
+                <span>TXT</span>
+              </div>
+              <div class="file-chip csv">
+                <span style="font-size: 1.2rem;">📊</span>
+                <span>CSV</span>
+              </div>
+            </div>
+
+            <!-- Ingestion Pipeline Stages -->
+            <div class="ingestion-pipeline-timeline">
+              <div class="pipeline-stage" title="File validation and type check">
+                <span class="pipeline-stage-number">01</span>
+                <span class="pipeline-stage-title">Upload</span>
+              </div>
+              <div class="pipeline-stage" title="PyPDF2 / docx / csv extractors">
+                <span class="pipeline-stage-number">02</span>
+                <span class="pipeline-stage-title">Extract</span>
+              </div>
+              <div class="pipeline-stage" title="Whitespace and Unicode normalization">
+                <span class="pipeline-stage-number">03</span>
+                <span class="pipeline-stage-title">Clean</span>
+              </div>
+              <div class="pipeline-stage" title="500-token chunks with 50-token overlap">
+                <span class="pipeline-stage-number">04</span>
+                <span class="pipeline-stage-title">Chunk</span>
+              </div>
+              <div class="pipeline-stage" title="all-MiniLM-L6-v2 384-d vectors">
+                <span class="pipeline-stage-number">05</span>
+                <span class="pipeline-stage-title">Embed</span>
+              </div>
+              <div class="pipeline-stage" title="PostgreSQL pgvector storage">
+                <span class="pipeline-stage-number">06</span>
+                <span class="pipeline-stage-title">Index</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 02: LIVE DOCUMENT INGESTION
+         ======================================================================== -->
+    <section id="ingestion" class="section-ingestion">
+      <div class="container">
+        <div style="text-align: center; max-width: 620px; margin: 0 auto 2.5rem;">
+          <div class="section-eyebrow">
+            <span class="dot"></span>
+            DOCUMENT INGESTION
+          </div>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.75rem;">Drop knowledge here.</h2>
+          <p style="color: var(--ink-secondary);">
+            Drag and drop your enterprise manuals, policies, and contracts. Files are validated, deduplicated via SHA-256, chunked, and embedded into PostgreSQL with pgvector.
+          </p>
+        </div>
+
+        <div class="ingestion-workspace-grid">
+          
+          <!-- Dropzone Card -->
+          <div class="dropzone-card" id="dropzone" onclick="document.getElementById('file-upload-input').click()">
+            <input type="file" id="file-upload-input" accept=".pdf,.docx,.txt,.csv" onchange="handleFileSelected(event)" />
+            <div class="dropzone-icon">📁</div>
+            <h3 class="dropzone-title">Drop file here or click to browse</h3>
+            <p class="dropzone-subtitle">Supported: PDF · DOCX · TXT · CSV — max 50 MB</p>
+
+            <div id="file-selected-pill" style="display: none; background: #FFFFFF; border: 1.5px solid var(--ink-primary); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-weight: 700; font-size: 0.85rem; margin-bottom: 1rem;">
+              📎 <span id="file-selected-name">filename.pdf</span>
+            </div>
+
+            <button type="button" id="upload-btn" class="btn btn-accent" onclick="event.stopPropagation(); executeFileUpload();" disabled>
+              Upload &amp; Index Knowledge
+            </button>
+
+            <div id="upload-status-box" class="upload-status-box"></div>
+          </div>
+
+          <!-- Real Indexed Documents Manager -->
+          <div class="indexed-docs-container">
+            <div class="indexed-docs-header">
+              <div>
+                <h4 style="font-size: 1.1rem;">Indexed Documents</h4>
+                <p style="font-size: 0.75rem; color: var(--ink-secondary);">Live records stored in PostgreSQL</p>
+              </div>
+              <button class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;" onclick="fetchDocumentsList()">
+                ↻ Refresh
+              </button>
+            </div>
+
+            <div class="indexed-docs-list" id="indexed-docs-list">
+              <div style="text-align: center; padding: 2rem; color: var(--ink-tertiary);">Loading documents…</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 03: RAG PIPELINE VISUALIZATION
+         ======================================================================== -->
+    <section id="rag-engine" class="section-rag-engine">
+      <div class="container">
+        <div style="max-width: 680px;">
+          <div class="section-eyebrow">
+            <span class="dot"></span>
+            RETRIEVAL AUGMENTED GENERATION
+          </div>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.75rem;">Search first. Generate second.</h2>
+          <p style="color: var(--ink-secondary); font-size: 1.05rem;">
+            Combining high-dimensional vector search with generative LLMs to eliminate hallucinations. Every generated word is bound to retrieved evidence.
+          </p>
+        </div>
+
+        <div class="rag-pipeline-interactive">
+          <div class="rag-nodes-track">
+            
+            <div class="rag-node-card active" onclick="highlightRagStep(0)">
+              <div class="rag-node-icon">❓</div>
+              <div class="rag-node-label">User Query</div>
+              <div class="rag-node-desc">Natural language question</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(1)">
+              <div class="rag-node-icon">🧠</div>
+              <div class="rag-node-label">Intent Analysis</div>
+              <div class="rag-node-desc">Factual vs greeting check</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(2)">
+              <div class="rag-node-icon">⚡</div>
+              <div class="rag-node-label">Embedding</div>
+              <div class="rag-node-desc">all-MiniLM-L6-v2 (384-d)</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(3)">
+              <div class="rag-node-icon">🔍</div>
+              <div class="rag-node-label">Vector Search</div>
+              <div class="rag-node-desc">PostgreSQL &lt;=&gt; Cosine</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(4)">
+              <div class="rag-node-icon">📚</div>
+              <div class="rag-node-label">Top-K Chunks</div>
+              <div class="rag-node-desc">Semantic rank &amp; filter</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(5)">
+              <div class="rag-node-icon">🤖</div>
+              <div class="rag-node-label">LLM Synthesis</div>
+              <div class="rag-node-desc">OpenRouter Llama-3.1</div>
+            </div>
+
+            <div class="rag-node-card" onclick="highlightRagStep(6)">
+              <div class="rag-node-icon">✅</div>
+              <div class="rag-node-label">Grounded Answer</div>
+              <div class="rag-node-desc">Verified source citations</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 04: ACTUAL WORKING QUERY WORKSPACE
+         ======================================================================== -->
+    <section id="workspace" class="section-workspace">
+      <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div class="section-eyebrow">
+              <span class="dot"></span>
+              QUERY RESOLUTION CONSOLE
+            </div>
+            <h2 style="font-size: 2.5rem;">Ask it. Trace it. Verify it.</h2>
+            <p style="color: var(--ink-secondary);">
+              Get grounded answers with verbatim citations, similarity metrics, and transparent source traces.
+            </p>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; color: var(--ink-secondary);">
+            BACKEND: POSTGRESQL + PGVECTOR + OPENROUTER
+          </div>
+        </div>
+
+        <div class="workspace-layout">
+          
+          <!-- Left Column: Knowledge Sources & Parameters -->
+          <div class="workspace-panel">
+            <h4 style="font-size: 0.95rem;">Knowledge Base</h4>
+            <span class="mono" style="color: var(--ink-tertiary); font-size: 0.65rem;">ACTIVE SOURCES</span>
+
+            <div class="panel-sources-list" id="workspace-sources-list">
+              <!-- Dynamically populated from /api/documents -->
+            </div>
+
+            <div class="param-group">
+              <div class="param-label">
+                <span>RETRIEVAL DEPTH (TOP-K)</span>
+                <span id="top-k-display" style="color: var(--ink-primary);">5 chunks</span>
+              </div>
+              <select id="top-k-select" class="param-select" onchange="document.getElementById('top-k-display').textContent = this.value + ' chunks'">
+                <option value="3">Top-3 (High Precision)</option>
+                <option value="5" selected>Top-5 (Standard Balanced)</option>
+                <option value="10">Top-10 (Comprehensive)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Center Column: Question & Live Answer -->
+          <div class="workspace-panel workspace-center">
+            
+            <div class="query-input-container">
+              <textarea id="main-query-input" class="query-textarea" placeholder="Ask anything about your uploaded documents… (e.g. FMLA leave, cloud security, annual leave)"></textarea>
+              
+              <div class="query-actions-row">
+                <span class="mono" style="color: var(--ink-tertiary);">ENTER TO SUBMIT</span>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="clearQueryWorkspace()">Clear</button>
+                  <button id="ask-btn" class="btn btn-accent" style="padding: 0.5rem 1.4rem;" onclick="executeMainQuery()">Ask Knowledge Space &rarr;</button>
+                </div>
+              </div>
+
+              <!-- Quick Sample Queries -->
+              <div class="sample-chips-row">
+                <span class="sample-chip" onclick="setQueryText('Who is eligible for leave under the Family and Medical Leave Act (FMLA)?')">Eligibility for FMLA leave?</span>
+                <span class="sample-chip" onclick="setQueryText('What are the encryption standards required for cloud data at rest?')">Cloud encryption standards?</span>
+                <span class="sample-chip" onclick="setQueryText('How many days of paid annual leave are full-time employees entitled to?')">Annual leave entitlement?</span>
+                <span class="sample-chip" onclick="setQueryText('What is the employee leave policy of Infosys?')">Hallucination / Gap Test</span>
+              </div>
+            </div>
+
+            <!-- Answer Section -->
+            <div class="answer-output-area">
+              <div id="answer-status-bar" class="answer-status-bar" style="display: none;">
+                <span id="answer-intent-badge" class="badge-intent">Intent: Factual</span>
+                <span id="answer-count-badge" class="mono" style="font-size: 0.7rem; color: var(--ink-secondary);">3 Chunks Retrieved</span>
+              </div>
+
+              <div id="answer-placeholder" class="answer-placeholder">
+                <span style="font-size: 2.2rem;">💬</span>
+                <p style="font-weight: 600; font-size: 0.95rem;">Ask a question to see grounded evidence retrieved from PostgreSQL.</p>
+                <span style="font-size: 0.8rem;">Every answer will reference exact pages, chunks, and similarity scores.</span>
+              </div>
+
+              <div id="answer-text-content" class="answer-text-content" style="display: none;"></div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Live Retrieval Trace -->
+          <div class="workspace-panel">
+            <h4 style="font-size: 0.95rem;">Retrieval Trace</h4>
+            <span class="mono" style="color: var(--ink-tertiary); font-size: 0.65rem;">COSINE SIMILARITY EVIDENCE</span>
+
+            <div class="trace-items-list" id="trace-items-list">
+              <div style="text-align: center; padding: 3rem 1rem; color: var(--ink-tertiary); font-size: 0.8rem;">
+                No query executed yet.<br />Run a question to inspect retrieved source chunks.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 05: MULTI-AGENT ORCHESTRATION
+         ======================================================================== -->
+    <section id="agents" class="section-agents">
+      <div class="container">
+        <div style="text-align: center; max-width: 640px; margin: 0 auto 2.5rem;">
+          <div class="section-eyebrow">
+            <span class="dot"></span>
+            MULTI-AGENT ARCHITECTURE
+          </div>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.75rem;">Many specialists. One answer.</h2>
+          <p style="color: var(--ink-secondary);">
+            A team of specialized intelligent operators coordinated around a central orchestrator to understand, retrieve, clarify, and synthesize grounded responses.
+          </p>
+        </div>
+
+        <div class="agent-orchestration-diagram">
+          
+          <div class="orchestrator-core">
+            <span style="font-size: 1.6rem;">⚡</span>
+            <span style="font-size: 0.78rem; font-weight: 800; margin-top: 0.25rem;">ORCHESTRATOR</span>
+            <span style="font-size: 0.58rem; color: #d4d4d4;">Query Flow</span>
+          </div>
+
+          <div class="agents-ring">
+            
+            <div class="agent-card">
+              <div class="agent-avatar" style="background: var(--accent-aqua-subtle); color: #0d9488;">🧭</div>
+              <div class="agent-title">Query Understanding</div>
+              <div class="agent-desc">Classifies intent, normalizes input, and filters non-retrieval conversational chit-chat.</div>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-avatar" style="background: var(--accent-lime); color: var(--ink-primary);">🔍</div>
+              <div class="agent-title">Retrieval Agent</div>
+              <div class="agent-desc">Generates dense 384-d vectors and coordinates pgvector cosine similarity search.</div>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-avatar" style="background: #e0e7ff; color: #4338ca;">💬</div>
+              <div class="agent-title">Clarification Agent</div>
+              <div class="agent-desc">Detects ambiguous pronouns or underspecified queries and proposes options.</div>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-avatar" style="background: var(--accent-yellow); color: #854d0e;">🧠</div>
+              <div class="agent-title">Conversation Memory</div>
+              <div class="agent-desc">Tracks multi-turn chat history and resolves coreferences ("Who is eligible for it?").</div>
+            </div>
+
+            <div class="agent-card">
+              <div class="agent-avatar" style="background: #fce7f3; color: #be185d;">✍️</div>
+              <div class="agent-title">Response Generation</div>
+              <div class="agent-desc">Grounds context into final response with strict source citations and truth checks.</div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 08: KNOWLEDGE GAP & HALLUCINATION PREVENTION
+         ======================================================================== -->
+    <section class="section-knowledge-gap">
+      <div class="container">
+        <div style="max-width: 620px;">
+          <div class="section-eyebrow">
+            <span class="dot" style="background: var(--accent-coral);"></span>
+            KNOWLEDGE GAP DETECTION
+          </div>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.75rem;">It should know when it doesn't.</h2>
+          <p style="color: var(--ink-secondary); font-size: 1.05rem;">
+            A true enterprise intelligence platform must refuse to invent facts. When evidence does not exist in your database, AI-QRS transparently reports a knowledge gap rather than hallucinating.
+          </p>
+        </div>
+
+        <div class="gap-demo-container">
+          <div>
+            <div class="gap-badge">⚠️ ZERO EVIDENCE DETECTED</div>
+            <h3 style="font-size: 1.35rem; margin-bottom: 0.75rem;">"What is the employee maternity leave policy of Infosys?"</h3>
+            <p style="color: var(--ink-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.25rem;">
+              Because no document named "Infosys Policy" exists in the database, the model enforces strict grounding:
+            </p>
+            <div style="background: #FFFFFF; border-left: 4px solid var(--accent-coral); padding: 1rem; border-radius: var(--radius-sm); font-style: italic; font-size: 0.9rem;">
+              "I could not find an answer to your question in the available knowledge base."
+            </div>
+          </div>
+
+          <div style="background: #FFFFFF; border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border-subtle); text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛡️</div>
+            <h4 style="font-size: 1.05rem; margin-bottom: 0.35rem;">Hallucination Guard Active</h4>
+            <p style="font-size: 0.8rem; color: var(--ink-secondary);">
+              Threshold: Cosine similarity &lt; 0.20 rejects speculation. Answers require verifiable chunk citations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION 10: VOICE INTERACTION (WEB SPEECH API)
+         ======================================================================== -->
+    <section id="voice" class="section-voice">
+      <div class="container">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+          <div class="section-eyebrow">
+            <span class="dot"></span>
+            VOICE INTERFACE
+          </div>
+          <h2 style="font-size: 2.5rem; margin-bottom: 0.75rem;">Ask with your voice.</h2>
+          <p style="color: var(--ink-secondary);">
+            A seamless hands-free interface using the Web Speech API. Click the microphone, speak your question, and watch the platform transcribe and execute retrieval automatically.
+          </p>
+        </div>
+
+        <div class="voice-interactive-box">
+          <button id="mic-toggle-btn" class="mic-button" onclick="toggleVoiceRecognition()" title="Click to speak">
+            🎤
+          </button>
+
+          <div id="voice-transcript-display" style="font-size: 1.1rem; font-weight: 700; color: var(--ink-primary); min-height: 32px;">
+            "Click the microphone and speak your query…"
+          </div>
+
+          <div class="audio-waveform" id="waveform-bars">
+            <div class="waveform-bar" style="height: 12px;"></div>
+            <div class="waveform-bar" style="height: 24px;"></div>
+            <div class="waveform-bar" style="height: 18px;"></div>
+            <div class="waveform-bar" style="height: 30px;"></div>
+            <div class="waveform-bar" style="height: 16px;"></div>
+            <div class="waveform-bar" style="height: 22px;"></div>
+            <div class="waveform-bar" style="height: 10px;"></div>
+          </div>
+
+          <span class="mono" id="voice-status-label" style="color: var(--ink-tertiary); font-size: 0.75rem;">
+            POWERED BY BROWSER WEB SPEECH API &amp; PGVECTOR
+          </span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FOOTER & ACADEMIC ATTRIBUTION
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-cta-block">
+        <h2>Your files. Your intelligence.</h2>
+        <p>
+          Build a knowledge layer that can retrieve, reason, explain and stay grounded in the information you provide.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <a href="#workspace" class="btn btn-accent" style="padding: 0.85rem 1.75rem;">
+            Enter Knowledge Space &rarr;
+          </a>
+          <a href="#ingestion" class="btn btn-outline" style="background: transparent; color: #FFFFFF; border-color: #4b4f42;">
+            Upload Documents
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-meta-bar">
+        <div>
+          <strong style="color: #FFFFFF;">AI-QRS</strong> — Development of AI-Based Knowledge Retrieval Platform with Query Resolution System
+        </div>
+        <div class="mono" style="font-size: 0.7rem;">
+          POSTGRESQL 18 · PGVECTOR · SENTENCE-TRANSFORMERS · OPENROUTER LLM
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       CLIENT APPLICATION SCRIPT: THREE.JS 3D CORE + API BINDINGS
+       ======================================================================== -->
+  <script>
+    const API_BASE = window.location.origin;
+    let selectedUploadFile = null;
+    let speechRecognition = null;
+    let isRecordingSpeech = false;
+
+    // ========================================================================
+    // 1. THREE.JS INTERACTIVE 3D KNOWLEDGE CORE
+    // ========================================================================
+    function initThreeKnowledgeCore() {
+      const container = document.getElementById('three-canvas-container');
+      if (!container || typeof THREE === 'undefined') return;
+
+      const width = container.clientWidth || 500;
+      const height = container.clientHeight || 500;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 14);
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xC9FF3F, 1.2);
+      dirLight.position.set(5, 8, 5);
+      scene.add(dirLight);
+
+      const blueLight = new THREE.DirectionalLight(0x6FE8D2, 1.0);
+      blueLight.position.set(-5, -4, 4);
+      scene.add(blueLight);
+
+      // Central Knowledge Orb Group
+      const coreGroup = new THREE.Group();
+      scene.add(coreGroup);
+
+      // 1. Central Core Sphere (Frosted Glass / Wireframe Hybrid)
+      const sphereGeo = new THREE.SphereGeometry(2.4, 32, 32);
+      const sphereMat = new THREE.MeshPhongMaterial({
+        color: 0x171815,
+        emissive: 0x1a2e26,
+        specular: 0x6FE8D2,
+        shininess: 40,
+        transparent: true,
+        opacity: 0.92,
+      });
+      const coreSphere = new THREE.Mesh(sphereGeo, sphereMat);
+      coreGroup.add(coreSphere);
+
+      // Outer Wireframe Glow
+      const wireGeo = new THREE.SphereGeometry(2.48, 16, 16);
+      const wireMat = new THREE.MeshBasicMaterial({
+        color: 0x6FE8D2,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.35,
+      });
+      const wireSphere = new THREE.Mesh(wireGeo, wireMat);
+      coreGroup.add(wireSphere);
+
+      // 2. Orbiting Document Cards (PDF, DOCX, TXT, CSV)
+      const docCardGeo = new THREE.BoxGeometry(0.8, 1.1, 0.08);
+      const docTypes = [
+        { color: 0xE53E3E, name: "PDF Chunk #04", relevance: "0.94" },
+        { color: 0x2B6CB0, name: "DOCX Policy", relevance: "0.89" },
+        { color: 0x38A169, name: "CSV Record", relevance: "0.91" },
+        { color: 0xC9FF3F, name: "TXT Guide", relevance: "0.96" },
+      ];
+
+      const orbitingCards = [];
+      const orbitalRadius = 4.2;
+
+      docTypes.forEach((doc, i) => {
+        const angle = (i / docTypes.length) * Math.PI * 2;
+        const mat = new THREE.MeshPhongMaterial({ color: doc.color, shininess: 80 });
+        const mesh = new THREE.Mesh(docCardGeo, mat);
+        mesh.userData = { title: doc.name, score: doc.relevance };
+        orbitingCards.push({ mesh, angle, speed: 0.004 + (i * 0.001) });
+        coreGroup.add(mesh);
+      });
+
+      // 3. Particle Field (Vector Embeddings)
+      const particleCount = 160;
+      const particleGeo = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+
+      const colorPalette = [
+        new THREE.Color(0xC9FF3F), // Lime
+        new THREE.Color(0x6FE8D2), // Mint
+        new THREE.Color(0xFFD95A), // Yellow
+        new THREE.Color(0x8CA8FF), // Periwinkle
+      ];
+
+      for (let i = 0; i < particleCount; i++) {
+        const r = 3.2 + Math.random() * 3.5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos((Math.random() * 2) - 1);
+
+        positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        positions[i * 3 + 2] = r * Math.cos(phi);
+
+        const col = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        colors[i * 3] = col.r;
+        colors[i * 3 + 1] = col.g;
+        colors[i * 3 + 2] = col.b;
+      }
+
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const particleMat = new THREE.PointsMaterial({
+        size: 0.12,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.85,
+      });
+
+      const particleSystem = new THREE.Points(particleGeo, particleMat);
+      coreGroup.add(particleSystem);
+
+      // Mouse Interaction & Parallax
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      });
+
+      // Animation Loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        targetX += (mouseX - targetX) * 0.04;
+        targetY += (mouseY - targetY) * 0.04;
+
+        coreGroup.rotation.y += 0.003;
+        coreGroup.rotation.x = targetY * 0.25;
+        coreGroup.rotation.z = targetX * 0.15;
+
+        // Animate Orbiting Cards
+        orbitingCards.forEach(item => {
+          item.angle += item.speed;
+          item.mesh.position.x = Math.cos(item.angle) * orbitalRadius;
+          item.mesh.position.z = Math.sin(item.angle) * orbitalRadius;
+          item.mesh.position.y = Math.sin(item.angle * 2) * 0.7;
+          item.mesh.rotation.y = -item.angle;
+          item.mesh.rotation.x = 0.2;
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // Handle Resize
+      window.addEventListener('resize', () => {
+        const newW = container.clientWidth;
+        const newH = container.clientHeight;
+        camera.aspect = newW / newH;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newW, newH);
+      });
+    }
+
+    // ========================================================================
+    // 2. LIVE SYSTEM HEALTH CHECK
+    // ========================================================================
+    async function checkSystemHealth() {
+      try {
+        const res = await fetch(`${API_BASE}/api/health`);
+        const data = await res.json();
+        
+        if (data.status === 'ok') {
+          document.getElementById('health-label').textContent = `System Active · ${data.pgvector}`;
+          document.getElementById('metric-doc-count').textContent = data.indexed_documents;
+          document.getElementById('metric-chunk-count').textContent = data.total_chunks;
+        } else {
+          document.getElementById('health-label').textContent = 'System Degraded';
+        }
+      } catch (err) {
+        document.getElementById('health-label').textContent = 'Connecting…';
+      }
+    }
+
+    // ========================================================================
+    // 3. LIVE DOCUMENTS LISTING
+    // ========================================================================
+    async function fetchDocumentsList() {
+      const listContainer = document.getElementById('indexed-docs-list');
+      const sourcesContainer = document.getElementById('workspace-sources-list');
+
+      try {
+        const res = await fetch(`${API_BASE}/api/documents`);
+        const docs = await res.json();
+
+        if (!docs || docs.length === 0) {
+          listContainer.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--ink-tertiary);">No documents indexed yet. Drop a file above to begin.</div>`;
+          sourcesContainer.innerHTML = `<div style="color: var(--ink-tertiary); font-size: 0.75rem;">No sources available</div>`;
+          return;
+        }
+
+        // Render Ingestion Panel List
+        listContainer.innerHTML = docs.map(d => {
+          const ext = (d.file_type || 'TXT').toUpperCase();
+          const sizeKb = d.file_size > 1048576 
+            ? `${(d.file_size / 1048576).toFixed(1)} MB` 
+            : `${(d.file_size / 1024).toFixed(0)} KB`;
+          const dateStr = new Date(d.upload_date).toLocaleDateString();
+
+          return `
+            <div class="doc-row-item">
+              <div class="doc-meta-left">
+                <span class="badge-filetype badge-${ext}">${ext}</span>
+                <div>
+                  <div class="doc-name" title="${d.file_name}">${d.file_name}</div>
+                  <div class="doc-stats">${d.chunks} chunks · ${sizeKb} · ${dateStr}</div>
+                </div>
+              </div>
+              <span class="badge-indexed-status">✓ Indexed</span>
+            </div>
+          `;
+        }).join('');
+
+        // Render Workspace Sources Filter List
+        sourcesContainer.innerHTML = docs.map(d => `
+          <div class="source-filter-item" title="${d.file_name}" onclick="setQueryText('What does ${d.file_name} cover?')">
+            <span>📄</span>
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${d.file_name}</span>
+          </div>
+        `).join('');
+
+        // Update counters
+        document.getElementById('metric-doc-count').textContent = docs.length;
+
+      } catch (err) {
+        listContainer.innerHTML = `<div style="color: var(--accent-coral); padding: 1rem;">Failed to load documents list.</div>`;
+      }
+    }
+
+    // ========================================================================
+    // 4. REAL DOCUMENT UPLOAD HANDLER
+    // ========================================================================
+    function handleFileSelected(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      selectedUploadFile = file;
+      document.getElementById('file-selected-name').textContent = `${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
+      document.getElementById('file-selected-pill').style.display = 'inline-block';
+      document.getElementById('upload-btn').disabled = false;
+    }
+
+    async function executeFileUpload() {
+      if (!selectedUploadFile) return;
+
+      const btn = document.getElementById('upload-btn');
+      const statusBox = document.getElementById('upload-status-box');
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Ingesting &amp; Generating Embeddings…`;
+
+      statusBox.className = 'upload-status-box info';
+      statusBox.textContent = `⏳ Uploading "${selectedUploadFile.name}" and generating pgvector embeddings…`;
+
+      const formData = new FormData();
+      formData.append('file', selectedUploadFile);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/documents/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          statusBox.className = 'upload-status-box success';
+          statusBox.textContent = result.status === 'already_indexed'
+            ? `✓ Already Indexed: ${result.file_name} (${result.chunks_created} chunks)`
+            : `✓ Successfully Ingested: ${result.file_name} — ${result.chunks_created} semantic chunks created and indexed into PostgreSQL!`;
+
+          // Reset selection
+          selectedUploadFile = null;
+          document.getElementById('file-selected-pill').style.display = 'none';
+          document.getElementById('file-upload-input').value = '';
+
+          // Refresh documents and health
+          fetchDocumentsList();
+          checkSystemHealth();
+        } else {
+          statusBox.className = 'upload-status-box error';
+          statusBox.textContent = `❌ Error: ${result.detail || 'Ingestion failed'}`;
+        }
+      } catch (err) {
+        statusBox.className = 'upload-status-box error';
+        statusBox.textContent = `❌ Network Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Upload &amp; Index Knowledge';
+      }
+    }
+
+    // Drag and drop events
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-active'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-active'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-active');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFileSelected({ target: { files: e.dataTransfer.files } });
+      }
+    });
+
+    // ========================================================================
+    // 5. LIVE QUERY WORKSPACE (CONNECTED TO /api/query)
+    // ========================================================================
+    function setQueryText(text) {
+      const input = document.getElementById('main-query-input');
+      input.value = text;
+      input.focus();
+      document.getElementById('workspace').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function triggerHeroMiniQuery() {
+      const q = document.getElementById('mini-hero-input').value;
+      setQueryText(q);
+      executeMainQuery();
+    }
+
+    function clearQueryWorkspace() {
+      document.getElementById('main-query-input').value = '';
+      document.getElementById('answer-placeholder').style.display = 'flex';
+      document.getElementById('answer-text-content').style.display = 'none';
+      document.getElementById('answer-status-bar').style.display = 'none';
+      document.getElementById('trace-items-list').innerHTML = `
+        <div style="text-align: center; padding: 3rem 1rem; color: var(--ink-tertiary); font-size: 0.8rem;">
+          No query executed yet.<br />Run a question to inspect retrieved source chunks.
+        </div>
+      `;
+    }
+
+    async function executeMainQuery() {
+      const input = document.getElementById('main-query-input');
+      const query = input.value.trim();
+      if (!query) return;
+
+      const btn = document.getElementById('ask-btn');
+      const topK = parseInt(document.getElementById('top-k-select').value);
+      const answerPlaceholder = document.getElementById('answer-placeholder');
+      const answerContent = document.getElementById('answer-text-content');
+      const statusBar = document.getElementById('answer-status-bar');
+      const traceList = document.getElementById('trace-items-list');
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Retrieving &amp; Reasoning…`;
+
+      answerPlaceholder.style.display = 'none';
+      answerContent.style.display = 'block';
+      answerContent.innerHTML = `<div style="color: var(--ink-secondary);"><span class="spinner" style="margin-right: 8px;"></span> Searching vector space, assembling context, and querying OpenRouter LLM…</div>`;
+      statusBar.style.display = 'none';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/query`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query, top_k: topK }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Status Bar
+          statusBar.style.display = 'flex';
+          document.getElementById('answer-intent-badge').textContent = `Intent: ${data.detected_intent || 'Factual'}`;
+          document.getElementById('answer-count-badge').textContent = `${data.retrieval_count || 0} Chunks Retrieved`;
+
+          // Formatted Answer
+          answerContent.textContent = data.answer;
+
+          // Render Retrieval Evidence Trace
+          const sources = data.sources || [];
+          if (sources.length > 0) {
+            traceList.innerHTML = sources.map(s => {
+              const scorePct = Math.min(100, Math.round(s.similarity_score * 100));
+              return `
+                <div class="trace-item-card">
+                  <div class="trace-card-header">
+                    <span class="trace-rank-badge">RANK #${s.rank}</span>
+                    <span class="mono" style="font-size: 0.72rem; font-weight: 800; color: #0d9488;">${scorePct}% RELEVANCE</span>
+                  </div>
+                  <div style="font-weight: 700; font-size: 0.82rem; color: var(--ink-primary);">
+                    📄 ${s.source_file} ${s.page_number ? `· Page ${s.page_number}` : ''}
+                  </div>
+                  <div class="trace-score-bar-bg">
+                    <div class="trace-score-bar-fill" style="width: ${scorePct}%;"></div>
+                  </div>
+                  <div class="mono" style="font-size: 0.65rem; color: var(--ink-tertiary);">
+                    Chunk Index: ${s.chunk_index} · Score: ${s.similarity_score}
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            traceList.innerHTML = `
+              <div style="text-align: center; padding: 2rem; color: var(--accent-coral); font-size: 0.85rem; font-weight: 700;">
+                ⚠️ No matching chunks found above threshold.
+              </div>
+            `;
+          }
+
+        } else {
+          answerContent.innerHTML = `<span style="color: var(--accent-coral);">❌ Query Failed: ${data.detail || 'Server error'}</span>`;
+        }
+      } catch (err) {
+        answerContent.innerHTML = `<span style="color: var(--accent-coral);">❌ Network Error: ${err.message}</span>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `Ask Knowledge Space &rarr;`;
+      }
+    }
+
+    // Enter key submits query
+    document.getElementById('main-query-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        executeMainQuery();
+      }
+    });
+
+    // ========================================================================
+    // 6. RAG STEP INTERACTIVE HIGHLIGHTER
+    // ========================================================================
+    function highlightRagStep(index) {
+      const nodes = document.querySelectorAll('.rag-node-card');
+      nodes.forEach((n, i) => {
+        if (i === index) n.classList.add('active');
+        else n.classList.remove('active');
+      });
+    }
+
+    // ========================================================================
+    // 7. WEB SPEECH API VOICE INTERACTION
+    // ========================================================================
+    function toggleVoiceRecognition() {
+      const micBtn = document.getElementById('mic-toggle-btn');
+      const transcriptDisplay = document.getElementById('voice-transcript-display');
+      const statusLabel = document.getElementById('voice-status-label');
+
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Web Speech API is not supported in this browser. Try Google Chrome or Microsoft Edge.');
+        return;
+      }
+
+      if (isRecordingSpeech) {
+        if (speechRecognition) speechRecognition.stop();
+        micBtn.classList.remove('recording');
+        isRecordingSpeech = false;
+        statusLabel.textContent = 'Voice input stopped.';
+        return;
+      }
+
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      speechRecognition = new SpeechRec();
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = true;
+      speechRecognition.lang = 'en-US';
+
+      speechRecognition.onstart = () => {
+        isRecordingSpeech = true;
+        micBtn.classList.add('recording');
+        transcriptDisplay.textContent = 'Listening to your voice… speak now';
+        statusLabel.textContent = 'AUDIO RECORDING ACTIVE';
+      };
+
+      speechRecognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        transcriptDisplay.textContent = `"${transcript}"`;
+
+        if (event.results[0].isFinal) {
+          setQueryText(transcript);
+          executeMainQuery();
+        }
+      };
+
+      speechRecognition.onerror = (event) => {
+        micBtn.classList.remove('recording');
+        isRecordingSpeech = false;
+        statusLabel.textContent = `Speech error: ${event.error}`;
+      };
+
+      speechRecognition.onend = () => {
+        micBtn.classList.remove('recording');
+        isRecordingSpeech = false;
+        statusLabel.textContent = 'Query transferred to workspace.';
+      };
+
+      speechRecognition.start();
+    }
+
+    // Waveform simulation
+    setInterval(() => {
+      if (isRecordingSpeech) {
+        document.querySelectorAll('.waveform-bar').forEach(b => {
+          b.style.height = `${Math.floor(6 + Math.random() * 26)}px`;
+        });
+      }
+    }, 120);
+
+    // ========================================================================
+    // INITIALIZATION
+    // ========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeKnowledgeCore();
+      checkSystemHealth();
+      fetchDocumentsList();
+    });
+  </script>
+</body>
+</html>

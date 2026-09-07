@@ -9,6 +9,10 @@
 *.pem
 *.key
 secrets/
+SYSTEM_OVERVIEW_AND_HANDOFF.md
+*HANDOFF*.md
+*OVERVIEW*.md
+
 
 # ── Python ────────────────────────────────────────────────
 __pycache__/
