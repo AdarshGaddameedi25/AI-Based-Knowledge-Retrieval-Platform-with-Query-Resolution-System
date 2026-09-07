@@ -23,6 +23,7 @@ class RAGResponse:
     sources: List[dict]
     context_used: str
     retrieval_results: List[RetrievalResult]
+    confidence: float = 0.0
 
 
 class RAGPipeline:
@@ -73,8 +74,19 @@ class RAGPipeline:
         data = response.json()
         return data["choices"][0]["message"]["content"].strip()
 
-    def run(self, query: str, db: Session, top_k: int = None) -> RAGResponse:
-        results = self._retriever.retrieve(query, db=db, top_k=top_k)
+    def run(
+        self,
+        query: str,
+        db: Session,
+        top_k: int = None,
+        domain_filter: Optional[str] = None,
+    ) -> RAGResponse:
+        results = self._retriever.retrieve(
+            query,
+            db=db,
+            top_k=top_k,
+            domain_filter=domain_filter,
+        )
 
         if not results:
             return RAGResponse(
@@ -83,12 +95,17 @@ class RAGPipeline:
                 sources=[],
                 context_used="",
                 retrieval_results=[],
+                confidence=0.0,
             )
 
         context = self._build_context(results)
         logger.info(f"Calling OpenRouter LLM ({settings.llm_model}) with {len(results)} retrieved chunks")
 
         answer = self._call_llm(context, query)
+
+        # Compute confidence as mean similarity score
+        scores = [r.similarity_score for r in results]
+        confidence = round(sum(scores) / len(scores), 4) if scores else 0.0
 
         sources = [
             {
@@ -109,4 +126,5 @@ class RAGPipeline:
             sources=sources,
             context_used=context,
             retrieval_results=results,
+            confidence=confidence,
         )

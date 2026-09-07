@@ -1,5 +1,6 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List, Optional
 
 
 @dataclass
@@ -8,7 +9,8 @@ class QueryAnalysis:
     normalized_query: str
     requires_retrieval: bool
     detected_intent: str
-    key_terms: list[str]
+    key_terms: List[str]
+    suggested_domain: Optional[str] = None
 
 
 GREETINGS = {"hi", "hello", "hey", "good morning", "good afternoon", "good evening"}
@@ -21,6 +23,29 @@ INTENT_PATTERNS = {
     "definitional": re.compile(r"\b(define|what is|what are|meaning of|explain)\b", re.I),
 }
 
+# Keyword sets for domain auto-detection
+DOMAIN_KEYWORDS = {
+    "hr": {
+        "leave", "fmla", "pto", "vacation", "sick", "policy", "employee", "hr",
+        "human resources", "payroll", "benefits", "eeoc", "disability", "hiring",
+        "onboarding", "termination", "performance", "appraisal", "workforce",
+        "maternity", "paternity", "salary", "compensation", "discrimination",
+    },
+    "technology": {
+        "api", "software", "database", "server", "cloud", "docker", "kubernetes",
+        "python", "javascript", "react", "node", "sql", "nosql", "vector",
+        "pgvector", "embedding", "machine learning", "ai", "llm", "rag",
+        "authentication", "authorization", "oauth", "jwt", "security", "devops",
+        "microservices", "architecture", "deployment", "ci", "cd", "pipeline",
+    },
+    "legal": {
+        "law", "legal", "contract", "agreement", "compliance", "regulation",
+        "statute", "jurisdiction", "liability", "court", "litigation", "ip",
+        "intellectual property", "patent", "trademark", "copyright", "gdpr",
+        "hipaa", "privacy", "audit",
+    },
+}
+
 
 class QueryUnderstandingAgent:
     def analyze(self, query: str) -> QueryAnalysis:
@@ -28,6 +53,7 @@ class QueryUnderstandingAgent:
         requires_retrieval = self._needs_retrieval(normalized)
         intent = self._detect_intent(normalized)
         key_terms = self._extract_key_terms(normalized)
+        domain = self._detect_domain(normalized)
 
         return QueryAnalysis(
             original_query=query,
@@ -35,6 +61,7 @@ class QueryUnderstandingAgent:
             requires_retrieval=requires_retrieval,
             detected_intent=intent,
             key_terms=key_terms,
+            suggested_domain=domain,
         )
 
     def _normalize(self, query: str) -> str:
@@ -59,7 +86,18 @@ class QueryUnderstandingAgent:
                 return intent
         return "general"
 
-    def _extract_key_terms(self, query: str) -> list[str]:
+    def _detect_domain(self, query: str) -> Optional[str]:
+        lower = query.lower()
+        scores: dict[str, int] = {}
+        for domain, keywords in DOMAIN_KEYWORDS.items():
+            score = sum(1 for kw in keywords if kw in lower)
+            if score > 0:
+                scores[domain] = score
+        if not scores:
+            return None
+        return max(scores, key=lambda d: scores[d])
+
+    def _extract_key_terms(self, query: str) -> List[str]:
         stop_words = {
             "the", "a", "an", "is", "are", "was", "were", "be", "been",
             "being", "have", "has", "had", "do", "does", "did", "will",

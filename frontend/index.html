@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI-QRS — AI-Based Knowledge Retrieval Platform & Query Resolution System</title>
+  <title>AI-QRS â€” AI-Based Knowledge Retrieval Platform & Query Resolution System</title>
   <meta name="description" content="A physical intelligence laboratory for organizational knowledge. Production RAG platform with pgvector, multi-agent orchestration, and grounded query resolution." />
   
   <!-- Modern Expressive Typography -->
@@ -325,7 +325,7 @@
     }
 
     /* ==========================================================================
-       HERO SECTION — 3D KNOWLEDGE CORE
+       HERO SECTION â€” 3D KNOWLEDGE CORE
        ========================================================================== */
     section.hero-section {
       padding: 3.5rem 0 4rem;
@@ -1429,10 +1429,10 @@
       <div class="nav-actions">
         <div id="system-health-badge" class="system-health-pill">
           <span class="status-indicator"></span>
-          <span id="health-label">System Active · pgvector v0.8.6</span>
+          <span id="health-label">System Active Â· pgvector v0.8.6</span>
         </div>
         <a href="#workspace" class="btn btn-outline">Explore Space</a>
-        <a href="#ingestion" class="btn btn-primary">Upload Docs ↗</a>
+        <a href="#ingestion" class="btn btn-primary">Upload Docs â†—</a>
       </div>
     </div>
   </header>
@@ -1459,7 +1459,7 @@
             </h1>
 
             <p class="hero-description">
-              Turn your organization's documents into a searchable intelligence layer — grounded in evidence, connected to context, and designed to know when the answer isn't there.
+              Turn your organization's documents into a searchable intelligence layer â€” grounded in evidence, connected to context, and designed to know when the answer isn't there.
             </p>
 
             <div class="hero-cta-group">
@@ -1510,13 +1510,13 @@
             <!-- Bottom Right Mini Interactive RAG Prompt -->
             <div class="hero-floating-card card-bottom-right">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="mono" style="color: var(--ink-secondary);">Ask the knowledge base…</span>
+                <span class="mono" style="color: var(--ink-secondary);">Ask the knowledge baseâ€¦</span>
                 <span class="badge-indexed-status">Grounded</span>
               </div>
 
               <div class="interactive-mini-prompt">
                 <input type="text" id="mini-hero-input" value="What is the leave policy for eligible employees?" />
-                <button type="button" onclick="triggerHeroMiniQuery()" title="Execute query">→</button>
+                <button type="button" onclick="triggerHeroMiniQuery()" title="Execute query">â†’</button>
               </div>
 
               <div class="pipeline-step-flow">
@@ -1561,19 +1561,19 @@
           <div class="universe-visual">
             <div class="file-type-chips">
               <div class="file-chip pdf">
-                <span style="font-size: 1.2rem;">📄</span>
+                <span style="font-size: 1.2rem;">ðŸ“„</span>
                 <span>PDF</span>
               </div>
               <div class="file-chip docx">
-                <span style="font-size: 1.2rem;">📝</span>
+                <span style="font-size: 1.2rem;">ðŸ“</span>
                 <span>DOCX</span>
               </div>
               <div class="file-chip txt">
-                <span style="font-size: 1.2rem;">📑</span>
+                <span style="font-size: 1.2rem;">ðŸ“‘</span>
                 <span>TXT</span>
               </div>
               <div class="file-chip csv">
-                <span style="font-size: 1.2rem;">📊</span>
+                <span style="font-size: 1.2rem;">ðŸ“Š</span>
                 <span>CSV</span>
               </div>
             </div>
@@ -1631,12 +1631,24 @@
           <!-- Dropzone Card -->
           <div class="dropzone-card" id="dropzone" onclick="document.getElementById('file-upload-input').click()">
             <input type="file" id="file-upload-input" accept=".pdf,.docx,.txt,.csv" onchange="handleFileSelected(event)" />
-            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-icon">ðŸ“ </div>
             <h3 class="dropzone-title">Drop file here or click to browse</h3>
-            <p class="dropzone-subtitle">Supported: PDF · DOCX · TXT · CSV — max 50 MB</p>
+            <p class="dropzone-subtitle">Supported: PDF Â· DOCX Â· TXT Â· CSV â€” max 50 MB</p>
 
             <div id="file-selected-pill" style="display: none; background: #FFFFFF; border: 1.5px solid var(--ink-primary); padding: 0.5rem 1rem; border-radius: var(--radius-full); font-weight: 700; font-size: 0.85rem; margin-bottom: 1rem;">
-              📎 <span id="file-selected-name">filename.pdf</span>
+              ðŸ“Ž <span id="file-selected-name">filename.pdf</span>
+            </div>
+
+            <!-- M2: Domain selector for upload -->
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+              <label style="font-size:0.72rem;font-weight:700;color:var(--ink-secondary);white-space:nowrap;">Domain:</label>
+              <select id="upload-domain-select" style="border:1.5px solid var(--border-medium);border-radius:8px;padding:6px 10px;font-size:0.75rem;font-weight:600;background:#fff;color:var(--ink-primary);flex:1;">
+                <option value="">Auto-detect</option>
+                <option value="hr">HR &amp; Policy</option>
+                <option value="technology">Technology</option>
+                <option value="legal">Legal / Compliance</option>
+                <option value="general">General</option>
+              </select>
             </div>
 
             <button type="button" id="upload-btn" class="btn btn-accent" onclick="event.stopPropagation(); executeFileUpload();" disabled>
@@ -1654,12 +1666,30 @@
                 <p style="font-size: 0.75rem; color: var(--ink-secondary);">Live records stored in PostgreSQL</p>
               </div>
               <button class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;" onclick="fetchDocumentsList()">
-                ↻ Refresh
+                â†» Refresh
               </button>
             </div>
 
             <div class="indexed-docs-list" id="indexed-docs-list">
-              <div style="text-align: center; padding: 2rem; color: var(--ink-tertiary);">Loading documents…</div>
+              <div style="text-align: center; padding: 2rem; color: var(--ink-tertiary);">Loading documentsâ€¦</div>
+            </div>
+
+            <!-- M2: Query History & Stats Panel -->
+            <div style="margin-top:1.5rem;background:var(--bg-surface);border-radius:var(--radius-md);border:1px solid var(--border-subtle);padding:1.25rem;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+                <div>
+                  <h4 style="font-size:0.9rem;margin-bottom:2px;">Platform Stats &amp; History</h4>
+                  <span class="mono" style="font-size:0.62rem;color:var(--ink-tertiary);">LIVE FROM POSTGRESQL</span>
+                </div>
+                <button class="btn btn-outline" style="padding:0.3rem 0.75rem;font-size:0.72rem;" onclick="loadQueryHistory()">â†» Refresh</button>
+              </div>
+              <div id="stats-panel" style="margin-bottom:1rem;">
+                <div style="color:var(--ink-tertiary);font-size:0.8rem;">Loading statsâ€¦</div>
+              </div>
+              <div class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);margin-bottom:0.4rem;">RECENT QUERIES</div>
+              <div id="query-history-list" style="max-height:200px;overflow-y:auto;">
+                <div style="color:var(--ink-tertiary);font-size:0.8rem;">Loadingâ€¦</div>
+              </div>
             </div>
           </div>
 
@@ -1687,43 +1717,43 @@
           <div class="rag-nodes-track">
             
             <div class="rag-node-card active" onclick="highlightRagStep(0)">
-              <div class="rag-node-icon">❓</div>
+              <div class="rag-node-icon">â“</div>
               <div class="rag-node-label">User Query</div>
               <div class="rag-node-desc">Natural language question</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(1)">
-              <div class="rag-node-icon">🧠</div>
+              <div class="rag-node-icon">ðŸ§ </div>
               <div class="rag-node-label">Intent Analysis</div>
               <div class="rag-node-desc">Factual vs greeting check</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(2)">
-              <div class="rag-node-icon">⚡</div>
+              <div class="rag-node-icon">âš¡</div>
               <div class="rag-node-label">Embedding</div>
               <div class="rag-node-desc">all-MiniLM-L6-v2 (384-d)</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(3)">
-              <div class="rag-node-icon">🔍</div>
+              <div class="rag-node-icon">ðŸ”</div>
               <div class="rag-node-label">Vector Search</div>
               <div class="rag-node-desc">PostgreSQL &lt;=&gt; Cosine</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(4)">
-              <div class="rag-node-icon">📚</div>
+              <div class="rag-node-icon">ðŸ“š</div>
               <div class="rag-node-label">Top-K Chunks</div>
               <div class="rag-node-desc">Semantic rank &amp; filter</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(5)">
-              <div class="rag-node-icon">🤖</div>
+              <div class="rag-node-icon">ðŸ¤–</div>
               <div class="rag-node-label">LLM Synthesis</div>
               <div class="rag-node-desc">OpenRouter Llama-3.1</div>
             </div>
 
             <div class="rag-node-card" onclick="highlightRagStep(6)">
-              <div class="rag-node-icon">✅</div>
+              <div class="rag-node-icon">âœ…</div>
               <div class="rag-node-label">Grounded Answer</div>
               <div class="rag-node-desc">Verified source citations</div>
             </div>
@@ -1776,13 +1806,49 @@
                 <option value="10">Top-10 (Comprehensive)</option>
               </select>
             </div>
+
+            <div class="param-group">
+              <div class="param-label"><span>DOMAIN FILTER</span></div>
+              <select id="domain-filter-select" class="param-select">
+                <option value="">All Domains</option>
+                <option value="hr">HR &amp; Legal</option>
+                <option value="technology">Technology</option>
+                <option value="legal">Legal / Compliance</option>
+              </select>
+            </div>
+
+            <!-- M2: Confidence Gauge -->
+            <div style="margin-top: 1rem; padding: 0.75rem; background: var(--bg-surface-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);">RETRIEVAL CONFIDENCE</span>
+                <span id="confidence-gauge-label" style="font-size:0.75rem;font-weight:800;color:#9ca3af;">—</span>
+              </div>
+              <div style="background:var(--border-subtle);border-radius:4px;height:6px;overflow:hidden;">
+                <div id="confidence-gauge-fill" style="height:100%;width:0%;background:#9ca3af;border-radius:4px;"></div>
+              </div>
+            </div>
+
+            <!-- M2: Session Controls -->
+            <div style="margin-top:1rem;padding:0.75rem;background:var(--bg-surface-subtle);border-radius:var(--radius-sm);border:1px solid var(--border-subtle);">
+              <div class="mono" style="font-size:0.62rem;color:var(--ink-tertiary);margin-bottom:6px;">SESSION</div>
+              <div style="font-size:0.7rem;color:var(--ink-secondary);margin-bottom:8px;">ID: <span id="session-id-display" style="font-weight:700;color:var(--ink-primary);">—</span></div>
+              <button onclick="clearSession()" style="width:100%;background:none;border:1px solid var(--border-medium);color:var(--ink-secondary);border-radius:6px;padding:5px;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--accent-coral)';this.style.color='var(--accent-coral)'" onmouseout="this.style.borderColor='var(--border-medium)';this.style.color='var(--ink-secondary)'">↺ Clear Session Memory</button>
+            </div>
+
+            <!-- M2: Chat History Panel -->
+            <div style="margin-top:1rem;">
+              <div class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);margin-bottom:6px;">CONVERSATION</div>
+              <div id="chat-history-panel" style="max-height:280px;overflow-y:auto;padding-right:4px;">
+                <div style="text-align:center;color:var(--ink-tertiary);font-size:0.8rem;padding:1rem;">Start a conversation to see it here.</div>
+              </div>
+            </div>
           </div>
 
           <!-- Center Column: Question & Live Answer -->
           <div class="workspace-panel workspace-center">
             
             <div class="query-input-container">
-              <textarea id="main-query-input" class="query-textarea" placeholder="Ask anything about your uploaded documents… (e.g. FMLA leave, cloud security, annual leave)"></textarea>
+              <textarea id="main-query-input" class="query-textarea" placeholder="Ask anything about your uploaded documentsâ€¦ (e.g. FMLA leave, cloud security, annual leave)"></textarea>
               
               <div class="query-actions-row">
                 <span class="mono" style="color: var(--ink-tertiary);">ENTER TO SUBMIT</span>
@@ -1809,7 +1875,7 @@
               </div>
 
               <div id="answer-placeholder" class="answer-placeholder">
-                <span style="font-size: 2.2rem;">💬</span>
+                <span style="font-size: 2.2rem;">ðŸ’¬</span>
                 <p style="font-weight: 600; font-size: 0.95rem;">Ask a question to see grounded evidence retrieved from PostgreSQL.</p>
                 <span style="font-size: 0.8rem;">Every answer will reference exact pages, chunks, and similarity scores.</span>
               </div>
@@ -1854,7 +1920,7 @@
         <div class="agent-orchestration-diagram">
           
           <div class="orchestrator-core">
-            <span style="font-size: 1.6rem;">⚡</span>
+            <span style="font-size: 1.6rem;">âš¡</span>
             <span style="font-size: 0.78rem; font-weight: 800; margin-top: 0.25rem;">ORCHESTRATOR</span>
             <span style="font-size: 0.58rem; color: #d4d4d4;">Query Flow</span>
           </div>
@@ -1862,31 +1928,31 @@
           <div class="agents-ring">
             
             <div class="agent-card">
-              <div class="agent-avatar" style="background: var(--accent-aqua-subtle); color: #0d9488;">🧭</div>
+              <div class="agent-avatar" style="background: var(--accent-aqua-subtle); color: #0d9488;">ðŸ§­</div>
               <div class="agent-title">Query Understanding</div>
               <div class="agent-desc">Classifies intent, normalizes input, and filters non-retrieval conversational chit-chat.</div>
             </div>
 
             <div class="agent-card">
-              <div class="agent-avatar" style="background: var(--accent-lime); color: var(--ink-primary);">🔍</div>
+              <div class="agent-avatar" style="background: var(--accent-lime); color: var(--ink-primary);">ðŸ”</div>
               <div class="agent-title">Retrieval Agent</div>
               <div class="agent-desc">Generates dense 384-d vectors and coordinates pgvector cosine similarity search.</div>
             </div>
 
             <div class="agent-card">
-              <div class="agent-avatar" style="background: #e0e7ff; color: #4338ca;">💬</div>
+              <div class="agent-avatar" style="background: #e0e7ff; color: #4338ca;">ðŸ’¬</div>
               <div class="agent-title">Clarification Agent</div>
               <div class="agent-desc">Detects ambiguous pronouns or underspecified queries and proposes options.</div>
             </div>
 
             <div class="agent-card">
-              <div class="agent-avatar" style="background: var(--accent-yellow); color: #854d0e;">🧠</div>
+              <div class="agent-avatar" style="background: var(--accent-yellow); color: #854d0e;">ðŸ§ </div>
               <div class="agent-title">Conversation Memory</div>
               <div class="agent-desc">Tracks multi-turn chat history and resolves coreferences ("Who is eligible for it?").</div>
             </div>
 
             <div class="agent-card">
-              <div class="agent-avatar" style="background: #fce7f3; color: #be185d;">✍️</div>
+              <div class="agent-avatar" style="background: #fce7f3; color: #be185d;">âœï¸</div>
               <div class="agent-title">Response Generation</div>
               <div class="agent-desc">Grounds context into final response with strict source citations and truth checks.</div>
             </div>
@@ -1915,7 +1981,7 @@
 
         <div class="gap-demo-container">
           <div>
-            <div class="gap-badge">⚠️ ZERO EVIDENCE DETECTED</div>
+            <div class="gap-badge">âš ï¸ ZERO EVIDENCE DETECTED</div>
             <h3 style="font-size: 1.35rem; margin-bottom: 0.75rem;">"What is the employee maternity leave policy of Infosys?"</h3>
             <p style="color: var(--ink-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.25rem;">
               Because no document named "Infosys Policy" exists in the database, the model enforces strict grounding:
@@ -1926,7 +1992,7 @@
           </div>
 
           <div style="background: #FFFFFF; border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid var(--border-subtle); text-align: center;">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🛡️</div>
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">ðŸ›¡ï¸</div>
             <h4 style="font-size: 1.05rem; margin-bottom: 0.35rem;">Hallucination Guard Active</h4>
             <p style="font-size: 0.8rem; color: var(--ink-secondary);">
               Threshold: Cosine similarity &lt; 0.20 rejects speculation. Answers require verifiable chunk citations.
@@ -1954,11 +2020,11 @@
 
         <div class="voice-interactive-box">
           <button id="mic-toggle-btn" class="mic-button" onclick="toggleVoiceRecognition()" title="Click to speak">
-            🎤
+            ðŸŽ¤
           </button>
 
           <div id="voice-transcript-display" style="font-size: 1.1rem; font-weight: 700; color: var(--ink-primary); min-height: 32px;">
-            "Click the microphone and speak your query…"
+            "Click the microphone and speak your queryâ€¦"
           </div>
 
           <div class="audio-waveform" id="waveform-bars">
@@ -2001,10 +2067,10 @@
 
       <div class="footer-meta-bar">
         <div>
-          <strong style="color: #FFFFFF;">AI-QRS</strong> — Development of AI-Based Knowledge Retrieval Platform with Query Resolution System
+          <strong style="color: #FFFFFF;">AI-QRS</strong> â€” Development of AI-Based Knowledge Retrieval Platform with Query Resolution System
         </div>
         <div class="mono" style="font-size: 0.7rem;">
-          POSTGRESQL 18 · PGVECTOR · SENTENCE-TRANSFORMERS · OPENROUTER LLM
+          POSTGRESQL 18 Â· PGVECTOR Â· SENTENCE-TRANSFORMERS Â· OPENROUTER LLM
         </div>
       </div>
     </div>
@@ -2018,6 +2084,10 @@
     let selectedUploadFile = null;
     let speechRecognition = null;
     let isRecordingSpeech = false;
+
+    // â”€â”€ M2: Session & Conversation State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    let currentSessionId = null;   // Set by first /api/query response
+    let chatHistory = [];          // [{role, text, meta}] rendered in chat panel
 
     // ========================================================================
     // 1. THREE.JS INTERACTIVE 3D KNOWLEDGE CORE
@@ -2038,58 +2108,41 @@
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
 
-      // Lighting
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       scene.add(ambientLight);
-
       const dirLight = new THREE.DirectionalLight(0xC9FF3F, 1.2);
       dirLight.position.set(5, 8, 5);
       scene.add(dirLight);
-
       const blueLight = new THREE.DirectionalLight(0x6FE8D2, 1.0);
       blueLight.position.set(-5, -4, 4);
       scene.add(blueLight);
 
-      // Central Knowledge Orb Group
       const coreGroup = new THREE.Group();
       scene.add(coreGroup);
 
-      // 1. Central Core Sphere (Frosted Glass / Wireframe Hybrid)
       const sphereGeo = new THREE.SphereGeometry(2.4, 32, 32);
       const sphereMat = new THREE.MeshPhongMaterial({
-        color: 0x171815,
-        emissive: 0x1a2e26,
-        specular: 0x6FE8D2,
-        shininess: 40,
-        transparent: true,
-        opacity: 0.92,
+        color: 0x171815, emissive: 0x1a2e26, specular: 0x6FE8D2,
+        shininess: 40, transparent: true, opacity: 0.92,
       });
       const coreSphere = new THREE.Mesh(sphereGeo, sphereMat);
       coreGroup.add(coreSphere);
 
-      // Outer Wireframe Glow
       const wireGeo = new THREE.SphereGeometry(2.48, 16, 16);
-      const wireMat = new THREE.MeshBasicMaterial({
-        color: 0x6FE8D2,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.35,
-      });
+      const wireMat = new THREE.MeshBasicMaterial({ color: 0x6FE8D2, wireframe: true, transparent: true, opacity: 0.35 });
       const wireSphere = new THREE.Mesh(wireGeo, wireMat);
       coreGroup.add(wireSphere);
 
-      // 2. Orbiting Document Cards (PDF, DOCX, TXT, CSV)
       const docCardGeo = new THREE.BoxGeometry(0.8, 1.1, 0.08);
       const docTypes = [
         { color: 0xE53E3E, name: "PDF Chunk #04", relevance: "0.94" },
-        { color: 0x2B6CB0, name: "DOCX Policy", relevance: "0.89" },
-        { color: 0x38A169, name: "CSV Record", relevance: "0.91" },
-        { color: 0xC9FF3F, name: "TXT Guide", relevance: "0.96" },
+        { color: 0x2B6CB0, name: "DOCX Policy",   relevance: "0.89" },
+        { color: 0x38A169, name: "CSV Record",     relevance: "0.91" },
+        { color: 0xC9FF3F, name: "TXT Guide",      relevance: "0.96" },
       ];
 
       const orbitingCards = [];
       const orbitalRadius = 4.2;
-
       docTypes.forEach((doc, i) => {
         const angle = (i / docTypes.length) * Math.PI * 2;
         const mat = new THREE.MeshPhongMaterial({ color: doc.color, shininess: 80 });
@@ -2099,115 +2152,58 @@
         coreGroup.add(mesh);
       });
 
-      // 3. Particle Field (Vector Embeddings)
-      const particleCount = 160;
       const particleGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(particleCount * 3);
-      const colors = new Float32Array(particleCount * 3);
-
-      const colorPalette = [
-        new THREE.Color(0xC9FF3F), // Lime
-        new THREE.Color(0x6FE8D2), // Mint
-        new THREE.Color(0xFFD95A), // Yellow
-        new THREE.Color(0x8CA8FF), // Periwinkle
-      ];
-
-      for (let i = 0; i < particleCount; i++) {
-        const r = 3.2 + Math.random() * 3.5;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos((Math.random() * 2) - 1);
-
-        positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-        positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-        positions[i * 3 + 2] = r * Math.cos(phi);
-
-        const col = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-        colors[i * 3] = col.r;
-        colors[i * 3 + 1] = col.g;
-        colors[i * 3 + 2] = col.b;
+      const pCount = 180;
+      const positions = new Float32Array(pCount * 3);
+      for (let i = 0; i < pCount; i++) {
+        positions[i * 3]     = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
       }
-
       particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const particleMat = new THREE.PointsMaterial({ color: 0x6FE8D2, size: 0.08, transparent: true, opacity: 0.5 });
+      scene.add(new THREE.Points(particleGeo, particleMat));
 
-      const particleMat = new THREE.PointsMaterial({
-        size: 0.12,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.85,
-      });
-
-      const particleSystem = new THREE.Points(particleGeo, particleMat);
-      coreGroup.add(particleSystem);
-
-      // Mouse Interaction & Parallax
-      let mouseX = 0, mouseY = 0;
-      let targetX = 0, targetY = 0;
-
-      window.addEventListener('mousemove', (e) => {
-        const rect = container.getBoundingClientRect();
-        mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        mouseY = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      });
-
-      // Animation Loop
+      let frame = 0;
       function animate() {
         requestAnimationFrame(animate);
-
-        targetX += (mouseX - targetX) * 0.04;
-        targetY += (mouseY - targetY) * 0.04;
-
-        coreGroup.rotation.y += 0.003;
-        coreGroup.rotation.x = targetY * 0.25;
-        coreGroup.rotation.z = targetX * 0.15;
-
-        // Animate Orbiting Cards
-        orbitingCards.forEach(item => {
-          item.angle += item.speed;
-          item.mesh.position.x = Math.cos(item.angle) * orbitalRadius;
-          item.mesh.position.z = Math.sin(item.angle) * orbitalRadius;
-          item.mesh.position.y = Math.sin(item.angle * 2) * 0.7;
-          item.mesh.rotation.y = -item.angle;
-          item.mesh.rotation.x = 0.2;
+        frame++;
+        coreGroup.rotation.y += 0.004;
+        coreGroup.rotation.x = Math.sin(frame * 0.003) * 0.12;
+        orbitingCards.forEach(c => {
+          c.angle += c.speed;
+          c.mesh.position.x = Math.cos(c.angle) * orbitalRadius;
+          c.mesh.position.z = Math.sin(c.angle) * orbitalRadius;
+          c.mesh.position.y = Math.sin(c.angle * 0.7) * 1.2;
+          c.mesh.lookAt(0, 0, 0);
         });
-
         renderer.render(scene, camera);
       }
-
       animate();
-
-      // Handle Resize
-      window.addEventListener('resize', () => {
-        const newW = container.clientWidth;
-        const newH = container.clientHeight;
-        camera.aspect = newW / newH;
-        camera.updateProjectionMatrix();
-        renderer.setSize(newW, newH);
-      });
     }
 
     // ========================================================================
-    // 2. LIVE SYSTEM HEALTH CHECK
+    // 2. SYSTEM HEALTH CHECK
     // ========================================================================
     async function checkSystemHealth() {
       try {
         const res = await fetch(`${API_BASE}/api/health`);
         const data = await res.json();
-        
-        if (data.status === 'ok') {
-          document.getElementById('health-label').textContent = `System Active · ${data.pgvector}`;
-          document.getElementById('metric-doc-count').textContent = data.indexed_documents;
+        if (res.ok && data.status === 'healthy') {
+          document.getElementById('health-label').textContent = 'System Healthy';
+          document.getElementById('health-label').style.color = '#16a34a';
           document.getElementById('metric-chunk-count').textContent = data.total_chunks;
         } else {
           document.getElementById('health-label').textContent = 'System Degraded';
+          document.getElementById('health-label').style.color = '#dc2626';
         }
       } catch (err) {
-        document.getElementById('health-label').textContent = 'Connecting…';
+        document.getElementById('health-label').textContent = 'Connectingâ€¦';
       }
     }
 
     // ========================================================================
-    // 3. LIVE DOCUMENTS LISTING
+    // 3. LIVE DOCUMENTS LISTING (with Delete)
     // ========================================================================
     async function fetchDocumentsList() {
       const listContainer = document.getElementById('indexed-docs-list');
@@ -2218,46 +2214,81 @@
         const docs = await res.json();
 
         if (!docs || docs.length === 0) {
-          listContainer.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--ink-tertiary);">No documents indexed yet. Drop a file above to begin.</div>`;
-          sourcesContainer.innerHTML = `<div style="color: var(--ink-tertiary); font-size: 0.75rem;">No sources available</div>`;
+          listContainer.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--ink-tertiary);">No documents indexed yet. Drop a file above to begin.</div>`;
+          sourcesContainer.innerHTML = `<div style="color:var(--ink-tertiary);font-size:0.75rem;">No sources available</div>`;
           return;
         }
 
-        // Render Ingestion Panel List
         listContainer.innerHTML = docs.map(d => {
           const ext = (d.file_type || 'TXT').toUpperCase();
-          const sizeKb = d.file_size > 1048576 
-            ? `${(d.file_size / 1048576).toFixed(1)} MB` 
+          const sizeKb = d.file_size > 1048576
+            ? `${(d.file_size / 1048576).toFixed(1)} MB`
             : `${(d.file_size / 1024).toFixed(0)} KB`;
           const dateStr = new Date(d.upload_date).toLocaleDateString();
+          const domainLabel = d.domain ? `<span style="background:#f0f9ff;color:#0369a1;font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;border:1px solid #bae6fd;">${d.domain}</span>` : '';
 
           return `
-            <div class="doc-row-item">
+            <div class="doc-row-item" id="doc-row-${d.document_id}">
               <div class="doc-meta-left">
                 <span class="badge-filetype badge-${ext}">${ext}</span>
                 <div>
                   <div class="doc-name" title="${d.file_name}">${d.file_name}</div>
-                  <div class="doc-stats">${d.chunks} chunks · ${sizeKb} · ${dateStr}</div>
+                  <div class="doc-stats">${d.chunks} chunks Â· ${sizeKb} Â· ${dateStr} ${domainLabel}</div>
                 </div>
               </div>
-              <span class="badge-indexed-status">✓ Indexed</span>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span class="badge-indexed-status">âœ“ Indexed</span>
+                <button onclick="deleteDocument('${d.document_id}','${d.file_name.replace(/'/g,"\\'")}',this)"
+                  style="background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:3px 8px;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.2s;"
+                  onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='none'"
+                  title="Delete document">âœ• Delete</button>
+              </div>
             </div>
           `;
         }).join('');
 
-        // Render Workspace Sources Filter List
         sourcesContainer.innerHTML = docs.map(d => `
           <div class="source-filter-item" title="${d.file_name}" onclick="setQueryText('What does ${d.file_name} cover?')">
-            <span>📄</span>
-            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${d.file_name}</span>
+            <span>ðŸ“„</span>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.file_name}</span>
           </div>
         `).join('');
 
-        // Update counters
         document.getElementById('metric-doc-count').textContent = docs.length;
 
       } catch (err) {
-        listContainer.innerHTML = `<div style="color: var(--accent-coral); padding: 1rem;">Failed to load documents list.</div>`;
+        listContainer.innerHTML = `<div style="color:var(--accent-coral);padding:1rem;">Failed to load documents list.</div>`;
+      }
+    }
+
+    async function deleteDocument(docId, fileName, btn) {
+      if (!confirm(`Delete "${fileName}" and all its indexed chunks?\n\nThis cannot be undone.`)) return;
+
+      btn.disabled = true;
+      btn.textContent = 'â€¦';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/documents/${docId}`, { method: 'DELETE' });
+        if (res.ok) {
+          const row = document.getElementById(`doc-row-${docId}`);
+          if (row) {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(20px)';
+            row.style.transition = 'all 0.3s ease';
+            setTimeout(() => row.remove(), 320);
+          }
+          fetchDocumentsList();
+          checkSystemHealth();
+        } else {
+          const err = await res.json();
+          alert(`Delete failed: ${err.detail || 'Unknown error'}`);
+          btn.disabled = false;
+          btn.textContent = 'âœ• Delete';
+        }
+      } catch (err) {
+        alert(`Network error: ${err.message}`);
+        btn.disabled = false;
+        btn.textContent = 'âœ• Delete';
       }
     }
 
@@ -2267,7 +2298,6 @@
     function handleFileSelected(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       selectedUploadFile = file;
       document.getElementById('file-selected-name').textContent = `${file.name} (${(file.size / 1024).toFixed(0)} KB)`;
       document.getElementById('file-selected-pill').style.display = 'inline-block';
@@ -2279,52 +2309,48 @@
 
       const btn = document.getElementById('upload-btn');
       const statusBox = document.getElementById('upload-status-box');
+      const domainInput = document.getElementById('upload-domain-select');
+      const domain = domainInput ? domainInput.value : '';
 
       btn.disabled = true;
-      btn.innerHTML = `<span class="spinner"></span> Ingesting &amp; Generating Embeddings…`;
-
+      btn.innerHTML = `<span class="spinner"></span> Ingesting &amp; Generating Embeddingsâ€¦`;
       statusBox.className = 'upload-status-box info';
-      statusBox.textContent = `⏳ Uploading "${selectedUploadFile.name}" and generating pgvector embeddings…`;
+      statusBox.textContent = `â³ Uploading "${selectedUploadFile.name}" and generating pgvector embeddingsâ€¦`;
 
       const formData = new FormData();
       formData.append('file', selectedUploadFile);
 
-      try {
-        const res = await fetch(`${API_BASE}/api/documents/upload`, {
-          method: 'POST',
-          body: formData,
-        });
+      let url = `${API_BASE}/api/documents/upload`;
+      if (domain) url += `?domain=${encodeURIComponent(domain)}`;
 
+      try {
+        const res = await fetch(url, { method: 'POST', body: formData });
         const result = await res.json();
 
         if (res.ok) {
           statusBox.className = 'upload-status-box success';
           statusBox.textContent = result.status === 'already_indexed'
-            ? `✓ Already Indexed: ${result.file_name} (${result.chunks_created} chunks)`
-            : `✓ Successfully Ingested: ${result.file_name} — ${result.chunks_created} semantic chunks created and indexed into PostgreSQL!`;
+            ? `âœ“ Already Indexed: ${result.file_name} (${result.chunks_created} chunks)`
+            : `âœ“ Successfully Ingested: ${result.file_name} â€” ${result.chunks_created} semantic chunks created!`;
 
-          // Reset selection
           selectedUploadFile = null;
           document.getElementById('file-selected-pill').style.display = 'none';
           document.getElementById('file-upload-input').value = '';
-
-          // Refresh documents and health
           fetchDocumentsList();
           checkSystemHealth();
         } else {
           statusBox.className = 'upload-status-box error';
-          statusBox.textContent = `❌ Error: ${result.detail || 'Ingestion failed'}`;
+          statusBox.textContent = `âŒ Error: ${result.detail || 'Ingestion failed'}`;
         }
       } catch (err) {
         statusBox.className = 'upload-status-box error';
-        statusBox.textContent = `❌ Network Error: ${err.message}`;
+        statusBox.textContent = `âŒ Network Error: ${err.message}`;
       } finally {
         btn.disabled = false;
         btn.innerHTML = 'Upload &amp; Index Knowledge';
       }
     }
 
-    // Drag and drop events
     const dropzone = document.getElementById('dropzone');
     dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-active'); });
     dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-active'));
@@ -2337,7 +2363,181 @@
     });
 
     // ========================================================================
-    // 5. LIVE QUERY WORKSPACE (CONNECTED TO /api/query)
+    // 5. CHAT HISTORY RENDERER
+    // ========================================================================
+    function renderChatHistory() {
+      const panel = document.getElementById('chat-history-panel');
+      if (!panel) return;
+      if (chatHistory.length === 0) {
+        panel.innerHTML = `<div style="text-align:center;color:var(--ink-tertiary);font-size:0.8rem;padding:1rem;">Start a conversation to see it here.</div>`;
+        return;
+      }
+      panel.innerHTML = chatHistory.map((msg, i) => {
+        const isUser = msg.role === 'user';
+        const isClarification = msg.meta && msg.meta.clarification_needed;
+        const bgColor = isUser ? '#f0f9ff' : (isClarification ? '#fff7ed' : '#f0fdf4');
+        const borderColor = isUser ? '#bae6fd' : (isClarification ? '#fed7aa' : '#bbf7d0');
+        const icon = isUser ? 'ðŸ§‘' : (isClarification ? 'â“' : 'ðŸ¤–');
+
+        let metaHtml = '';
+        if (!isUser && msg.meta) {
+          if (msg.meta.detected_domain) {
+            metaHtml += `<span style="background:#ede9fe;color:#7c3aed;font-size:0.62rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-right:4px;">ðŸ· ${msg.meta.detected_domain}</span>`;
+          }
+          if (msg.meta.confidence > 0) {
+            const pct = Math.round(msg.meta.confidence * 100);
+            const confColor = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : '#dc2626';
+            metaHtml += `<span style="background:#f8fafc;color:${confColor};font-size:0.62rem;font-weight:700;padding:2px 6px;border-radius:4px;border:1px solid ${confColor}20;">âš¡ ${pct}% confidence</span>`;
+          }
+          if (msg.meta.detected_intent) {
+            metaHtml += `<span style="background:#f8fafc;color:var(--ink-tertiary);font-size:0.62rem;font-weight:600;padding:2px 6px;border-radius:4px;">Intent: ${msg.meta.detected_intent}</span>`;
+          }
+        }
+
+        return `
+          <div style="display:flex;gap:0.5rem;align-items:flex-start;margin-bottom:0.75rem;animation:fadeIn 0.3s ease;">
+            <div style="font-size:1.2rem;flex-shrink:0;margin-top:2px;">${icon}</div>
+            <div style="flex:1;">
+              <div style="background:${bgColor};border:1px solid ${borderColor};border-radius:12px ${isUser ? '12px 0 12px' : '0 12px 12px'};padding:0.75rem;font-size:0.85rem;line-height:1.55;color:var(--ink-primary);">
+                ${escapeHtml(msg.text)}
+              </div>
+              ${metaHtml ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${metaHtml}</div>` : ''}
+              <div style="font-size:0.65rem;color:var(--ink-tertiary);margin-top:3px;">${msg.time || ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      panel.scrollTop = panel.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function addToChatHistory(role, text, meta = null) {
+      chatHistory.push({
+        role,
+        text,
+        meta,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      });
+      renderChatHistory();
+    }
+
+    // ========================================================================
+    // 6. CONFIDENCE GAUGE RENDERER
+    // ========================================================================
+    function updateConfidenceGauge(confidence) {
+      const gauge = document.getElementById('confidence-gauge-fill');
+      const label = document.getElementById('confidence-gauge-label');
+      if (!gauge || !label) return;
+
+      const pct = Math.round((confidence || 0) * 100);
+      const color = pct >= 70 ? '#16a34a' : pct >= 40 ? '#d97706' : pct === 0 ? '#9ca3af' : '#dc2626';
+      gauge.style.width = `${pct}%`;
+      gauge.style.background = color;
+      gauge.style.transition = 'width 0.6s cubic-bezier(0.16,1,0.3,1), background 0.4s ease';
+      label.textContent = pct === 0 ? 'â€”' : `${pct}%`;
+      label.style.color = color;
+    }
+
+    // ========================================================================
+    // 7. CLEAR SESSION
+    // ========================================================================
+    async function clearSession() {
+      if (!currentSessionId) {
+        chatHistory = [];
+        renderChatHistory();
+        return;
+      }
+      try {
+        await fetch(`${API_BASE}/api/query/clear-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: currentSessionId }),
+        });
+      } catch (e) { /* silently ignore */ }
+      currentSessionId = null;
+      chatHistory = [];
+      renderChatHistory();
+      updateConfidenceGauge(0);
+      clearQueryWorkspace();
+      const sid = document.getElementById('session-id-display');
+      if (sid) sid.textContent = 'â€”';
+    }
+
+    // ========================================================================
+    // 8. QUERY HISTORY & STATS PANEL
+    // ========================================================================
+    async function loadQueryHistory() {
+      const histPanel = document.getElementById('query-history-list');
+      const statsPanel = document.getElementById('stats-panel');
+      if (!histPanel) return;
+
+      histPanel.innerHTML = `<div style="color:var(--ink-tertiary);font-size:0.8rem;padding:0.5rem;">Loadingâ€¦</div>`;
+
+      try {
+        // Load stats
+        if (statsPanel) {
+          const sRes = await fetch(`${API_BASE}/api/stats`);
+          if (sRes.ok) {
+            const s = await sRes.json();
+            const domainRows = (s.domain_breakdown || []).map(d =>
+              `<span style="background:#f0fdf4;color:#166534;font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:4px;border:1px solid #bbf7d0;">${d.domain}: ${d.document_count}</span>`
+            ).join('');
+            statsPanel.innerHTML = `
+              <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:0.5rem 0.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:800;color:#166534;">${s.total_documents}</div>
+                  <div style="font-size:0.65rem;color:var(--ink-tertiary);font-weight:700;">DOCUMENTS</div>
+                </div>
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:0.5rem 0.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:800;color:#1d4ed8;">${s.total_chunks}</div>
+                  <div style="font-size:0.65rem;color:var(--ink-tertiary);font-weight:700;">CHUNKS</div>
+                </div>
+                <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:0.5rem 0.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:800;color:#b45309;">${s.total_queries}</div>
+                  <div style="font-size:0.65rem;color:var(--ink-tertiary);font-weight:700;">QUERIES</div>
+                </div>
+              </div>
+              ${domainRows ? `<div style="display:flex;flex-wrap:wrap;gap:4px;">${domainRows}</div>` : ''}
+            `;
+          }
+        }
+
+        // Load history
+        const res = await fetch(`${API_BASE}/api/history?limit=15`);
+        const data = await res.json();
+
+        if (!data.history || data.history.length === 0) {
+          histPanel.innerHTML = `<div style="color:var(--ink-tertiary);font-size:0.8rem;padding:0.5rem;">No queries recorded yet.</div>`;
+          return;
+        }
+
+        histPanel.innerHTML = data.history.map(h => {
+          const time = new Date(h.timestamp).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+          const answerSnippet = h.answer ? h.answer.substring(0, 100) + (h.answer.length > 100 ? 'â€¦' : '') : '';
+          return `
+            <div style="border-bottom:1px solid var(--border-subtle);padding:0.6rem 0;cursor:pointer;"
+              onclick="setQueryText('${h.query_text.replace(/'/g, "\\'")}')">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--ink-primary);margin-bottom:2px;">${escapeHtml(h.query_text)}</div>
+              ${answerSnippet ? `<div style="font-size:0.7rem;color:var(--ink-secondary);margin-bottom:2px;">${escapeHtml(answerSnippet)}</div>` : ''}
+              <div style="font-size:0.63rem;color:var(--ink-tertiary);">${time}</div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        histPanel.innerHTML = `<div style="color:var(--accent-coral);font-size:0.8rem;">${err.message}</div>`;
+      }
+    }
+
+    // ========================================================================
+    // 9. LIVE QUERY WORKSPACE (M2 â€” Full Orchestrator)
     // ========================================================================
     function setQueryText(text) {
       const input = document.getElementById('main-query-input');
@@ -2354,12 +2554,16 @@
 
     function clearQueryWorkspace() {
       document.getElementById('main-query-input').value = '';
-      document.getElementById('answer-placeholder').style.display = 'flex';
-      document.getElementById('answer-text-content').style.display = 'none';
-      document.getElementById('answer-status-bar').style.display = 'none';
-      document.getElementById('trace-items-list').innerHTML = `
-        <div style="text-align: center; padding: 3rem 1rem; color: var(--ink-tertiary); font-size: 0.8rem;">
-          No query executed yet.<br />Run a question to inspect retrieved source chunks.
+      const placeholder = document.getElementById('answer-placeholder');
+      const content = document.getElementById('answer-text-content');
+      const statusBar = document.getElementById('answer-status-bar');
+      const traceList = document.getElementById('trace-items-list');
+      if (placeholder) placeholder.style.display = 'flex';
+      if (content) content.style.display = 'none';
+      if (statusBar) statusBar.style.display = 'none';
+      if (traceList) traceList.innerHTML = `
+        <div style="text-align:center;padding:3rem 1rem;color:var(--ink-tertiary);font-size:0.8rem;">
+          No query executed yet.<br/>Run a question to inspect retrieved source chunks.
         </div>
       `;
     }
@@ -2370,74 +2574,138 @@
       if (!query) return;
 
       const btn = document.getElementById('ask-btn');
-      const topK = parseInt(document.getElementById('top-k-select').value);
+      const topK = parseInt((document.getElementById('top-k-select') || {}).value || '5');
+      const domainFilter = (document.getElementById('domain-filter-select') || {}).value || null;
       const answerPlaceholder = document.getElementById('answer-placeholder');
       const answerContent = document.getElementById('answer-text-content');
       const statusBar = document.getElementById('answer-status-bar');
       const traceList = document.getElementById('trace-items-list');
 
       btn.disabled = true;
-      btn.innerHTML = `<span class="spinner"></span> Retrieving &amp; Reasoning…`;
+      btn.innerHTML = `<span class="spinner"></span> Retrieving &amp; Reasoningâ€¦`;
 
-      answerPlaceholder.style.display = 'none';
-      answerContent.style.display = 'block';
-      answerContent.innerHTML = `<div style="color: var(--ink-secondary);"><span class="spinner" style="margin-right: 8px;"></span> Searching vector space, assembling context, and querying OpenRouter LLM…</div>`;
-      statusBar.style.display = 'none';
+      if (answerPlaceholder) answerPlaceholder.style.display = 'none';
+      if (answerContent) {
+        answerContent.style.display = 'block';
+        answerContent.innerHTML = `<div style="color:var(--ink-secondary);"><span class="spinner" style="margin-right:8px;"></span> Running multi-agent pipelineâ€¦ embedding â†’ retrieve â†’ LLM</div>`;
+      }
+      if (statusBar) statusBar.style.display = 'none';
+
+      // Add user message to chat
+      addToChatHistory('user', query);
 
       try {
+        const body = {
+          query: query,
+          top_k: topK,
+          session_id: currentSessionId || undefined,
+          domain_filter: domainFilter || undefined,
+        };
+
         const res = await fetch(`${API_BASE}/api/query`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: query, top_k: topK }),
+          body: JSON.stringify(body),
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          // Status Bar
-          statusBar.style.display = 'flex';
-          document.getElementById('answer-intent-badge').textContent = `Intent: ${data.detected_intent || 'Factual'}`;
-          document.getElementById('answer-count-badge').textContent = `${data.retrieval_count || 0} Chunks Retrieved`;
+          // Persist session_id from server
+          if (data.session_id) {
+            currentSessionId = data.session_id;
+            const sid = document.getElementById('session-id-display');
+            if (sid) sid.textContent = currentSessionId.substring(0, 8) + 'â€¦';
+          }
 
-          // Formatted Answer
-          answerContent.textContent = data.answer;
+          // Update confidence gauge
+          updateConfidenceGauge(data.confidence || 0);
+
+          // Status Bar
+          if (statusBar) {
+            statusBar.style.display = 'flex';
+            const intentBadge = document.getElementById('answer-intent-badge');
+            const countBadge = document.getElementById('answer-count-badge');
+            if (intentBadge) intentBadge.textContent = `Intent: ${data.detected_intent || 'General'}`;
+            if (countBadge) countBadge.textContent = `${data.retrieval_count || 0} Chunks Retrieved`;
+          }
+
+          // Domain badge on answer
+          const domainBadgeHtml = data.detected_domain
+            ? `<span style="display:inline-block;background:#ede9fe;color:#7c3aed;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-bottom:8px;">ðŸ· ${data.detected_domain}</span><br/>`
+            : '';
+
+          // Handle clarification
+          if (data.clarification_needed) {
+            if (answerContent) {
+              answerContent.innerHTML = `
+                ${domainBadgeHtml}
+                <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem;">
+                  <div style="font-size:0.8rem;font-weight:700;color:#c2410c;margin-bottom:0.4rem;">â“ Clarification Needed</div>
+                  <div style="font-size:0.9rem;color:var(--ink-primary);">${escapeHtml(data.answer)}</div>
+                </div>
+              `;
+            }
+            addToChatHistory('assistant', data.answer, {
+              clarification_needed: true,
+              detected_domain: data.detected_domain,
+              detected_intent: data.detected_intent,
+              confidence: 0,
+            });
+          } else {
+            if (answerContent) {
+              answerContent.innerHTML = `${domainBadgeHtml}<div style="white-space:pre-wrap;line-height:1.65;">${escapeHtml(data.answer)}</div>`;
+            }
+            addToChatHistory('assistant', data.answer, {
+              detected_domain: data.detected_domain,
+              detected_intent: data.detected_intent,
+              confidence: data.confidence || 0,
+            });
+          }
 
           // Render Retrieval Evidence Trace
           const sources = data.sources || [];
-          if (sources.length > 0) {
-            traceList.innerHTML = sources.map(s => {
-              const scorePct = Math.min(100, Math.round(s.similarity_score * 100));
-              return `
-                <div class="trace-item-card">
-                  <div class="trace-card-header">
-                    <span class="trace-rank-badge">RANK #${s.rank}</span>
-                    <span class="mono" style="font-size: 0.72rem; font-weight: 800; color: #0d9488;">${scorePct}% RELEVANCE</span>
+          if (traceList) {
+            if (sources.length > 0) {
+              traceList.innerHTML = sources.map(s => {
+                const scorePct = Math.min(100, Math.round(s.similarity_score * 100));
+                const domainTag = s.domain
+                  ? `<span style="background:#f0f9ff;color:#0369a1;font-size:0.62rem;font-weight:700;padding:1px 5px;border-radius:3px;">${s.domain}</span>`
+                  : '';
+                return `
+                  <div class="trace-item-card">
+                    <div class="trace-card-header">
+                      <span class="trace-rank-badge">RANK #${s.rank}</span>
+                      <span class="mono" style="font-size:0.72rem;font-weight:800;color:#0d9488;">${scorePct}% RELEVANCE</span>
+                    </div>
+                    <div style="font-weight:700;font-size:0.82rem;color:var(--ink-primary);margin-bottom:4px;">
+                      ðŸ“„ ${escapeHtml(s.source_file)} ${s.page_number ? `Â· Page ${s.page_number}` : ''} ${domainTag}
+                    </div>
+                    <div class="trace-score-bar-bg">
+                      <div class="trace-score-bar-fill" style="width:${scorePct}%;"></div>
+                    </div>
+                    <div class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);">
+                      Chunk Index: ${s.chunk_index} Â· Score: ${s.similarity_score}
+                    </div>
                   </div>
-                  <div style="font-weight: 700; font-size: 0.82rem; color: var(--ink-primary);">
-                    📄 ${s.source_file} ${s.page_number ? `· Page ${s.page_number}` : ''}
-                  </div>
-                  <div class="trace-score-bar-bg">
-                    <div class="trace-score-bar-fill" style="width: ${scorePct}%;"></div>
-                  </div>
-                  <div class="mono" style="font-size: 0.65rem; color: var(--ink-tertiary);">
-                    Chunk Index: ${s.chunk_index} · Score: ${s.similarity_score}
-                  </div>
+                `;
+              }).join('');
+            } else {
+              traceList.innerHTML = `
+                <div style="text-align:center;padding:2rem;color:var(--accent-coral);font-size:0.85rem;font-weight:700;">
+                  âš ï¸ ${data.clarification_needed ? 'Awaiting clarification â€” no retrieval performed.' : 'No matching chunks found above threshold.'}
                 </div>
               `;
-            }).join('');
-          } else {
-            traceList.innerHTML = `
-              <div style="text-align: center; padding: 2rem; color: var(--accent-coral); font-size: 0.85rem; font-weight: 700;">
-                ⚠️ No matching chunks found above threshold.
-              </div>
-            `;
+            }
           }
 
         } else {
-          answerContent.innerHTML = `<span style="color: var(--accent-coral);">❌ Query Failed: ${data.detail || 'Server error'}</span>`;
+          if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">âŒ Query Failed: ${(data.detail || 'Server error')}</span>`;
+          addToChatHistory('assistant', `Error: ${data.detail || 'Server error'}`);
         }
       } catch (err) {
-        answerContent.innerHTML = `<span style="color: var(--accent-coral);">❌ Network Error: ${err.message}</span>`;
+        if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">âŒ Network Error: ${err.message}</span>`;
+        addToChatHistory('assistant', `Network Error: ${err.message}`);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `Ask Knowledge Space &rarr;`;
@@ -2453,7 +2721,7 @@
     });
 
     // ========================================================================
-    // 6. RAG STEP INTERACTIVE HIGHLIGHTER
+    // 10. RAG STEP INTERACTIVE HIGHLIGHTER
     // ========================================================================
     function highlightRagStep(index) {
       const nodes = document.querySelectorAll('.rag-node-card');
@@ -2464,7 +2732,7 @@
     }
 
     // ========================================================================
-    // 7. WEB SPEECH API VOICE INTERACTION
+    // 11. WEB SPEECH API VOICE INTERACTION
     // ========================================================================
     function toggleVoiceRecognition() {
       const micBtn = document.getElementById('mic-toggle-btn');
@@ -2493,7 +2761,7 @@
       speechRecognition.onstart = () => {
         isRecordingSpeech = true;
         micBtn.classList.add('recording');
-        transcriptDisplay.textContent = 'Listening to your voice… speak now';
+        transcriptDisplay.textContent = 'Listening to your voiceâ€¦ speak now';
         statusLabel.textContent = 'AUDIO RECORDING ACTIVE';
       };
 
@@ -2503,7 +2771,6 @@
           transcript += event.results[i][0].transcript;
         }
         transcriptDisplay.textContent = `"${transcript}"`;
-
         if (event.results[0].isFinal) {
           setQueryText(transcript);
           executeMainQuery();
@@ -2541,6 +2808,8 @@
       initThreeKnowledgeCore();
       checkSystemHealth();
       fetchDocumentsList();
+      renderChatHistory();
+      loadQueryHistory();
     });
   </script>
 </body>
