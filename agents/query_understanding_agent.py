@@ -11,16 +11,17 @@ class QueryAnalysis:
     detected_intent: str
     key_terms: List[str]
     suggested_domain: Optional[str] = None
+    classification_confidence: float = 0.85
 
 
 GREETINGS = {"hi", "hello", "hey", "good morning", "good afternoon", "good evening"}
 SMALL_TALK = {"how are you", "what can you do", "who are you"}
 
 INTENT_PATTERNS = {
+    "comparative": re.compile(r"\b(difference|compare|vs|versus|better|worse|between|distinction)\b", re.I),
+    "procedural": re.compile(r"\b(how (do|to|can|should|would)|steps|process|procedure|guide|instructions)\b", re.I),
+    "definitional": re.compile(r"\b(define|definition of|meaning of|what is meant by|explain)\b", re.I),
     "factual": re.compile(r"\b(what|who|when|where|how many|how much|which)\b", re.I),
-    "procedural": re.compile(r"\b(how (do|to|can)|steps|process|procedure|guide)\b", re.I),
-    "comparative": re.compile(r"\b(difference|compare|vs|versus|better|worse|between)\b", re.I),
-    "definitional": re.compile(r"\b(define|what is|what are|meaning of|explain)\b", re.I),
 }
 
 # Keyword sets for domain auto-detection
@@ -51,7 +52,9 @@ class QueryUnderstandingAgent:
     def analyze(self, query: str) -> QueryAnalysis:
         normalized = self._normalize(query)
         requires_retrieval = self._needs_retrieval(normalized)
-        intent = self._detect_intent(normalized)
+        intent, conf = self._detect_intent(normalized)
+        if not requires_retrieval:
+            conf = 1.0
         key_terms = self._extract_key_terms(normalized)
         domain = self._detect_domain(normalized)
 
@@ -62,6 +65,7 @@ class QueryUnderstandingAgent:
             detected_intent=intent,
             key_terms=key_terms,
             suggested_domain=domain,
+            classification_confidence=conf,
         )
 
     def _normalize(self, query: str) -> str:
@@ -80,11 +84,12 @@ class QueryUnderstandingAgent:
             return False
         return True
 
-    def _detect_intent(self, query: str) -> str:
+    def _detect_intent(self, query: str) -> tuple[str, float]:
         for intent, pattern in INTENT_PATTERNS.items():
             if pattern.search(query):
-                return intent
-        return "general"
+                conf = 0.95 if intent in {"comparative", "procedural", "definitional"} else 0.90
+                return intent, conf
+        return "general", 0.60
 
     def _detect_domain(self, query: str) -> Optional[str]:
         lower = query.lower()

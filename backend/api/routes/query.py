@@ -86,6 +86,7 @@ def handle_query(request: QueryRequest, db: Session = Depends(get_db)):
         "clarification_needed": result.clarification_needed,
         "clarification_question": result.clarification_question,
         "confidence": result.confidence,
+        "classification_confidence": result.classification_confidence,
         "retrieval_count": result.retrieval_count,
         "session_id": session_id,
     }

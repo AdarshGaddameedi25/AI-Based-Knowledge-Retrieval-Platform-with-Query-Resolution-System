@@ -35,6 +35,7 @@ class OrchestratorResult:
     clarification_question: str
     confidence: float
     retrieval_count: int
+    classification_confidence: float = 0.85
     session_id: Optional[str] = None
 
 
@@ -95,6 +96,7 @@ class AgentOrchestrator:
                 clarification_question="",
                 confidence=1.0,
                 retrieval_count=0,
+                classification_confidence=analysis.classification_confidence,
                 session_id=session_id,
             )
 
@@ -120,6 +122,7 @@ class AgentOrchestrator:
                 clarification_question=clarification.clarification_question,
                 confidence=0.0,
                 retrieval_count=0,
+                classification_confidence=analysis.classification_confidence,
                 session_id=session_id,
             )
 
@@ -166,5 +169,6 @@ class AgentOrchestrator:
             clarification_question="",
             confidence=generated.confidence,
             retrieval_count=len(results),
+            classification_confidence=analysis.classification_confidence,
             session_id=session_id,
         )
