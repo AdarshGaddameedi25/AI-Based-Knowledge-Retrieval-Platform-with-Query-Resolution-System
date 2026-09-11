@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -13,12 +14,35 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan: startup tasks → yield → (shutdown tasks if any)."""
+    logger.info("Starting AI Knowledge Retrieval Platform v2.1 (Milestone 2)")
+    logger.info("LLM: %s via OpenRouter", settings.llm_model)
+    logger.info("Embedding: %s (local, 384-dim)", settings.embedding_model)
+    logger.info("Similarity threshold: %s", settings.similarity_threshold)
+    logger.info("Max session history: %s turns", settings.max_session_history)
+    try:
+        from ingestion.embeddings import EmbeddingService
+        EmbeddingService()
+        logger.info("Embedding model pre-warmed successfully")
+    except Exception as e:
+        logger.warning("Could not pre-warm embedding model: %s", e)
+    yield
+    # Shutdown tasks (none currently needed)
+
+
 app = FastAPI(
     title="AI-Based Knowledge Retrieval Platform",
-    description="Production RAG system — PostgreSQL + pgvector + OpenRouter + Multi-Agent Orchestration",
+    description=(
+        "Production RAG system — PostgreSQL + pgvector + OpenRouter + Multi-Agent Orchestration. "
+        "Milestone 2: Query Understanding, Retrieval, Response Generation, Orchestration."
+    ),
     version="2.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -39,22 +63,11 @@ if os.path.exists("frontend"):
     app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
 
 
-@app.on_event("startup")
-async def startup():
-    logger.info("Starting AI Knowledge Retrieval Platform v2.1 (Milestone 2)")
-    logger.info(f"LLM: {settings.llm_model} via OpenRouter")
-    logger.info(f"Embedding: {settings.embedding_model} (local)")
-    logger.info(f"Similarity threshold: {settings.similarity_threshold}")
-    logger.info(f"Max session history: {settings.max_session_history} turns")
-    try:
-        from ingestion.embeddings import EmbeddingService
-        EmbeddingService()
-        logger.info("Embedding model pre-warmed successfully")
-    except Exception as e:
-        logger.warning(f"Could not pre-warm embedding model: {e}")
-
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host=settings.api_host, port=settings.api_port, reload=settings.debug)
-
+    uvicorn.run(
+        "backend.main:app",
+        host=settings.api_host,
+        port=settings.api_port,
+        reload=settings.debug,
+    )

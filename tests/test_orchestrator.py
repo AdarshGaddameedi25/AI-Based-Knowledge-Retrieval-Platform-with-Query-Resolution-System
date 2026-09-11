@@ -105,16 +105,16 @@ def _make_orchestrator_with_mocked_llm(retrieval_results):
     # Patch the LLM HTTP call
     from agents.response_generation_agent import ResponseGenerationAgent, GeneratedResponse
 
-    def mock_generate(query, results):
-        if not results:
+    def mock_generate(query, retrieval_results, query_type="factual", conversation_history=None):
+        if not retrieval_results:
             return GeneratedResponse(query=query, answer="Not found.", citations=[], context_chunks_used=0, confidence=0.0)
-        scores = [r.similarity_score for r in results]
+        scores = [r.similarity_score for r in retrieval_results]
         conf = round(sum(scores) / len(scores), 4)
         return GeneratedResponse(
             query=query,
             answer=f"Answer for: {query}",
-            citations=[{"source": r.source_file, "chunk_id": r.chunk_id, "score": r.similarity_score, "page_number": None, "domain": r.domain} for r in results],
-            context_chunks_used=len(results),
+            citations=[{"source": r.source_file, "chunk_id": r.chunk_id, "score": r.similarity_score, "page_number": None, "domain": r.domain} for r in retrieval_results],
+            context_chunks_used=len(retrieval_results),
             confidence=conf,
         )
 
