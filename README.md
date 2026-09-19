@@ -1,26 +1,39 @@
-# AI-Based Knowledge Retrieval Platform
+# AI-Based Knowledge Retrieval Platform (Query Resolution System)
 
-Production RAG system: PostgreSQL + pgvector + OpenRouter + sentence-transformers.
+Production-ready Multi-Agent RAG system built with FastAPI, PostgreSQL + pgvector, OpenRouter (Llama-3.1), and local Sentence-Transformers.
 
-## Architecture
+## Multi-Agent Architecture
+
+The platform uses an **Agent Orchestrator** to coordinate specialized sub-agents:
+
+1. **Query Understanding Agent**: Classifies intent (Factual, Procedural, Comparative, Ambiguous, Greeting) and detects domain context.
+2. **Clarification Agent (M3)**: Stateful clarification loop that handles ambiguous queries (e.g., pronouns, open-ended follow-ups, vague nouns) and constructs refined queries.
+3. **Conversation Memory Agent (M3)**: Tracks session topics, extracts entities, provides multi-turn context, and manages topic switching to prevent context contamination.
+4. **Retrieval Agent**: Semantic search over vectorized chunks with domain filtering, top-k selection, and dynamic similarity thresholds.
+5. **Response Generation Agent**: Grounds LLM responses against retrieved evidence and evaluates confidence scores.
 
 ```
 Document Upload
       ↓
-Validate → Extract → Clean → Chunk (tiktoken, 500 tokens)
+Clean → Chunk → Embed (all-MiniLM-L6-v2) → pgvector (IVFFlat)
       ↓
-Sentence-Transformers Embedding (all-MiniLM-L6-v2, 384-dim, local)
+User Query (Text or Voice)
       ↓
-PostgreSQL + pgvector (cosine similarity, IVFFlat index)
+[Query Understanding] ↔ [Conversation Memory] ↔ [Clarification Loop]
       ↓
-User Query → Query Embedding → pgvector Search → Top-K Chunks
+[Retrieval Agent] (pgvector Search)
       ↓
-RAG Context Builder (source delimiters + page numbers)
+[Response Generation Agent] (OpenRouter Llama-3.1)
       ↓
-OpenRouter LLM (meta-llama/llama-3.1-8b-instruct)
-      ↓
-Grounded Answer + Citations + Similarity Scores
+Grounded Answer + Transparency Citations + Confidence
 ```
+
+## Key Features
+
+- **Voice I/O**: Real-time microphone input with live transcripts, plus Text-to-Speech (TTS) reading of answers.
+- **Transparency Panel**: Interactive UI showing evidence chunks, exact text quotes, citation numbers `[1]`, similarity scores, and color-coded confidence levels.
+- **Hallucination Guards**: Low-confidence fallback, knowledge gap detection, and strict "I don't know" handling when retrieval yields no relevant chunks.
+- **Multi-turn RAG**: Intelligent pronoun resolution and context inclusion across complex conversations.
 
 ## Prerequisites
 

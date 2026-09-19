@@ -36,7 +36,7 @@ class ClearSessionRequest(BaseModel):
 @router.post("/query")
 def handle_query(request: QueryRequest, db: Session = Depends(get_db)):
     """
-    Main query endpoint — M2 Multi-Agent RAG pipeline.
+    Main query endpoint — M3 Multi-Agent RAG pipeline.
 
     Returns one of:
     - type="direct"        — greeting or small-talk (no retrieval)
@@ -44,9 +44,12 @@ def handle_query(request: QueryRequest, db: Session = Depends(get_db)):
     - type="rag_response"  — grounded answer with source citations
     - type="error"         — retrieval or LLM failure with controlled message
 
-    Response schema includes M2 canonical fields:
-      query_type, routing, detected_intent, detected_domain,
-      classification_confidence, confidence, retrieval_count, sources
+    M3 additions to response schema:
+      refined_query       — query after clarification cycle
+      clarification       — {required, question, pending} structured state
+      memory              — {session_id, used_context, active_topic}
+      sources[].text      — retrieved chunk text (truncated, for transparency panel)
+      sources[].citation  — citation label [1], [2], ...
     """
     query_text = request.query.strip()
 
@@ -61,7 +64,7 @@ def handle_query(request: QueryRequest, db: Session = Depends(get_db)):
             session_id=session_id,
             top_k=request.top_k,
             domain_filter=request.domain_filter,
-            similarity_threshold=0.0,  # Retriever applies settings.similarity_threshold internally
+            similarity_threshold=None,  # None → retriever uses settings.similarity_threshold
         )
     except EnvironmentError as e:
         # Raised when OPENROUTER_API_KEY is missing — configuration error
@@ -107,28 +110,43 @@ def handle_query(request: QueryRequest, db: Session = Depends(get_db)):
 
         # Query information
         "query": result.query,
-        "query_type": result.query_type,              # M2 canonical field
-        "routing": result.routing,                    # M2 canonical field
-        "detected_intent": result.detected_intent,    # backward compat alias
+        "refined_query": result.refined_query,          # M3.1 — refined after clarification
+        "query_type": result.query_type,                # M2 canonical field
+        "routing": result.routing,                       # M2 canonical field
+        "detected_intent": result.detected_intent,       # backward compat alias
         "detected_domain": result.detected_domain,
         "key_terms": result.key_terms,
 
         # Answer
         "answer": result.answer,
 
-        # Source attribution
+        # Source attribution — M3.4 includes text + citation
         "sources": result.sources,
 
-        # Clarification state
+        # M3.1 — Structured clarification state
+        "clarification": {
+            "required": result.clarification_needed,
+            "question": result.clarification_question if result.clarification_needed else None,
+            "pending": result.clarification_needed,
+        },
+
+        # Backward compat flat fields (keep for existing frontend code)
         "clarification_needed": result.clarification_needed,
         "clarification_question": result.clarification_question,
+
+        # M3.2 — Memory state
+        "memory": {
+            "session_id": session_id,
+            "used_context": result.used_memory_context,
+            "active_topic": memory.active_topic,
+        },
 
         # Scoring
         "confidence": result.confidence,
         "classification_confidence": result.classification_confidence,
         "retrieval_count": result.retrieval_count,
 
-        # Session
+        # Session (backward compat)
         "session_id": session_id,
     }
 

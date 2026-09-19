@@ -1153,6 +1153,158 @@
       margin-top: 0.4rem;
     }
 
+    /* M3.4 — Expandable chunk text */
+    .trace-chunk-text {
+      font-size: 0.74rem;
+      color: var(--ink-secondary);
+      line-height: 1.5;
+      background: var(--bg-surface-subtle);
+      border-left: 3px solid var(--accent-aqua);
+      border-radius: 4px;
+      padding: 0.6rem 0.75rem;
+      margin-top: 0.5rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: none;
+    }
+    .trace-chunk-text.expanded { display: block; }
+
+    .trace-toggle-btn {
+      background: none;
+      border: 1px solid var(--border-medium);
+      color: var(--ink-tertiary);
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.4rem;
+      transition: all 0.15s ease;
+    }
+    .trace-toggle-btn:hover {
+      border-color: var(--accent-aqua);
+      color: #0d9488;
+    }
+
+    /* M3.4 — Low-confidence card state */
+    .trace-item-card.low-confidence {
+      border-color: #fca5a5;
+      background: #fff5f5;
+    }
+
+    /* M3.4 — Source group header */
+    .trace-group-header {
+      font-size: 0.72rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      color: var(--ink-secondary);
+      letter-spacing: 0.06em;
+      padding: 0.35rem 0.5rem;
+      background: var(--bg-surface-subtle);
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      margin-top: 0.5rem;
+    }
+
+    /* M3.3 — Workspace mic button */
+    .workspace-mic-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-surface-subtle);
+      border: 1.5px solid var(--border-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      flex-shrink: 0;
+    }
+    .workspace-mic-btn:hover {
+      background: var(--accent-aqua-subtle);
+      border-color: var(--accent-aqua);
+    }
+    .workspace-mic-btn.recording {
+      background: #fee2e2;
+      border-color: #ef4444;
+      animation: pulse-coral 1.5s infinite;
+    }
+
+    /* M3.3 — TTS control bar */
+    .tts-controls {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .tts-controls.visible { display: flex; }
+
+    .tts-btn {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      color: var(--ink-primary);
+    }
+    .tts-btn:hover { border-color: var(--border-strong); background: var(--bg-card-hover); }
+    .tts-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .tts-btn.speaking { background: var(--accent-aqua-subtle); border-color: var(--accent-aqua); }
+
+    .tts-voice-select {
+      font-size: 0.72rem;
+      border: 1.5px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.5rem;
+      background: var(--bg-surface);
+      color: var(--ink-secondary);
+      max-width: 160px;
+    }
+
+    /* M3.3 — Voice transcript in workspace */
+    .workspace-voice-transcript {
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+      font-style: italic;
+      min-height: 1rem;
+      padding: 0 0.25rem;
+    }
+
+    /* M3.1 — Clarification refined query badge */
+    .refined-query-badge {
+      display: inline-block;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #166534;
+      padding: 3px 10px;
+      margin-bottom: 8px;
+    }
+
+    /* M3.2 — Context used indicator */
+    .context-used-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #1d4ed8;
+      padding: 2px 8px;
+    }
+
     /* ==========================================================================
        SECTION 05: MULTI-AGENT ORCHESTRATION
        ========================================================================== */
@@ -1849,14 +2001,20 @@
               <textarea id="main-query-input" class="query-textarea" placeholder="Ask anything about your uploaded documents&hellip; (e.g. FMLA leave, cloud security, annual leave)"></textarea>
               
               <div class="query-actions-row">
-                <span class="mono" style="color: var(--ink-tertiary);">ENTER TO SUBMIT</span>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                  <!-- M3.3: Workspace mic button -->
+                  <button id="workspace-mic-btn" class="workspace-mic-btn" onclick="toggleWorkspaceMic()" title="Voice input — click to speak">
+                    &#127908;
+                  </button>
+                  <div id="workspace-voice-transcript" class="workspace-voice-transcript"></div>
+                </div>
                 <div style="display: flex; gap: 0.5rem;">
                   <button class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="clearQueryWorkspace()">Clear</button>
                   <button id="ask-btn" class="btn btn-accent" style="padding: 0.5rem 1.4rem;" onclick="executeMainQuery()">Ask Knowledge Space &rarr;</button>
                 </div>
               </div>
 
-              <!-- Quick Sample Queries -->
+              
               <div class="sample-chips-row">
                 <span class="sample-chip" onclick="setQueryText('Who is eligible for leave under the Family and Medical Leave Act (FMLA)?')">Eligibility for FMLA leave?</span>
                 <span class="sample-chip" onclick="setQueryText('What are the encryption standards required for cloud data at rest?')">Cloud encryption standards?</span>
@@ -1879,6 +2037,15 @@
               </div>
 
               <div id="answer-text-content" class="answer-text-content" style="display: none;"></div>
+
+              <!-- M3.3: TTS Control Bar -->
+              <div id="tts-controls" class="tts-controls">
+                <button id="tts-speak-btn" class="tts-btn" onclick="ttsSpeak()" title="Read answer aloud">&#128266; Speak</button>
+                <button id="tts-pause-btn" class="tts-btn" onclick="ttsPause()" disabled title="Pause speech">&#9208; Pause</button>
+                <button id="tts-resume-btn" class="tts-btn" onclick="ttsResume()" disabled title="Resume speech">&#9654; Resume</button>
+                <button id="tts-stop-btn" class="tts-btn" onclick="ttsStop()" disabled title="Stop speech">&#9209; Stop</button>
+                <select id="tts-voice-select" class="tts-voice-select" onchange="ttsVoiceChanged()" title="Select voice"></select>
+              </div>
             </div>
 
           </div>
@@ -2578,9 +2745,14 @@
       const answerContent = document.getElementById('answer-text-content');
       const statusBar = document.getElementById('answer-status-bar');
       const traceList = document.getElementById('trace-items-list');
+      const ttsControls = document.getElementById('tts-controls');
 
       btn.disabled = true;
       btn.innerHTML = `<span class="spinner"></span> Retrieving &amp; Reasoning\u2026`;
+
+      // Stop any ongoing TTS
+      ttsStop();
+      if (ttsControls) ttsControls.classList.remove('visible');
 
       if (answerPlaceholder) answerPlaceholder.style.display = 'none';
       if (answerContent) {
@@ -2628,6 +2800,16 @@
             if (countBadge) countBadge.textContent = `${data.retrieval_count || 0} Chunks Retrieved`;
           }
 
+          // M3.2 — Context used badge
+          const contextBadgeHtml = (data.memory && data.memory.used_context)
+            ? `<span class="context-used-badge">\u{1F9E0} Using prior context</span> `
+            : '';
+
+          // M3.1 — Refined query badge
+          const refinedBadgeHtml = data.refined_query
+            ? `<div class="refined-query-badge">\u2705 Refined: &ldquo;${escapeHtml(data.refined_query)}&rdquo;</div>`
+            : '';
+
           // Domain badge on answer
           const domainBadgeHtml = data.detected_domain
             ? `<span style="display:inline-block;background:#ede9fe;color:#7c3aed;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-bottom:8px;">&#127991;&#65039; ${data.detected_domain}</span><br/>`
@@ -2636,11 +2818,13 @@
           // Handle clarification
           if (data.clarification_needed) {
             if (answerContent) {
+              answerContent.style.display = 'block';
               answerContent.innerHTML = `
-                ${domainBadgeHtml}
+                ${domainBadgeHtml}${contextBadgeHtml}
                 <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem;">
                   <div style="font-size:0.8rem;font-weight:700;color:#c2410c;margin-bottom:0.4rem;">&#10067; Clarification Needed</div>
                   <div style="font-size:0.9rem;color:var(--ink-primary);">${escapeHtml(data.answer)}</div>
+                  <div style="font-size:0.72rem;color:var(--ink-tertiary);margin-top:0.5rem;">Type your clarification in the query box above and press Enter.</div>
                 </div>
               `;
             }
@@ -2651,9 +2835,15 @@
               confidence: 0,
             });
           } else {
+            // Store last answer text for TTS
+            lastAnswerText = data.answer || '';
             if (answerContent) {
-              answerContent.innerHTML = `${domainBadgeHtml}<div style="white-space:pre-wrap;line-height:1.65;">${escapeHtml(data.answer)}</div>`;
+              answerContent.style.display = 'block';
+              answerContent.innerHTML = `${refinedBadgeHtml}${domainBadgeHtml}${contextBadgeHtml}<div style="white-space:pre-wrap;line-height:1.65;">${escapeHtml(data.answer)}</div>`;
             }
+            // Show TTS controls
+            if (ttsControls && lastAnswerText) ttsControls.classList.add('visible');
+
             addToChatHistory('assistant', data.answer, {
               detected_domain: data.detected_domain,
               detected_intent: data.detected_intent,
@@ -2661,53 +2851,116 @@
             });
           }
 
-          // Render Retrieval Evidence Trace
+          // M3.4 — Enhanced Retrieval Evidence Trace
           const sources = data.sources || [];
           if (traceList) {
             if (sources.length > 0) {
-              traceList.innerHTML = sources.map(s => {
-                const scorePct = Math.min(100, Math.round(s.similarity_score * 100));
-                const domainTag = s.domain
-                  ? `<span style="background:#f0f9ff;color:#0369a1;font-size:0.62rem;font-weight:700;padding:1px 5px;border-radius:3px;">${s.domain}</span>`
-                  : '';
-                return `
-                  <div class="trace-item-card">
-                    <div class="trace-card-header">
-                      <span class="trace-rank-badge">RANK #${s.rank}</span>
-                      <span class="mono" style="font-size:0.72rem;font-weight:800;color:#0d9488;">${scorePct}% RELEVANCE</span>
+              // Confidence indicator header
+              const avgScore = sources.reduce((a, s) => a + (s.similarity_score || 0), 0) / sources.length;
+              const confPct = Math.round(avgScore * 100);
+              const confColor = confPct >= 70 ? '#16a34a' : confPct >= 40 ? '#d97706' : '#dc2626';
+              const confLabel = confPct >= 70 ? 'High' : confPct >= 40 ? 'Medium' : 'Low';
+
+              // Group sources by document name
+              const grouped = {};
+              sources.forEach(s => {
+                const docKey = s.source_file || s.document_name || 'Unknown';
+                if (!grouped[docKey]) grouped[docKey] = [];
+                grouped[docKey].push(s);
+              });
+
+              let html = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;padding:0.5rem 0.75rem;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border-subtle);">
+                  <span class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);">EVIDENCE CONFIDENCE</span>
+                  <span style="font-weight:800;font-size:0.8rem;color:${confColor};">${confPct}% &mdash; ${confLabel}</span>
+                </div>
+              `;
+
+              Object.entries(grouped).forEach(([docName, docSources]) => {
+                // Source group header (only if multiple chunks from same doc)
+                if (docSources.length > 1) {
+                  html += `<div class="trace-group-header">&#128196; ${escapeHtml(docName)} &mdash; ${docSources.length} chunks</div>`;
+                }
+
+                docSources.forEach(s => {
+                  const scorePct = Math.min(100, Math.round((s.similarity_score || 0) * 100));
+                  const isLow = (s.similarity_score || 0) < 0.4;
+                  const scoreBarColor = scorePct >= 70 ? 'linear-gradient(90deg,#10b981,#06b6d4)'
+                    : scorePct >= 40 ? 'linear-gradient(90deg,#f59e0b,#fb923c)'
+                    : 'linear-gradient(90deg,#ef4444,#f87171)';
+                  const domainTag = s.domain
+                    ? `<span style="background:#f0f9ff;color:#0369a1;font-size:0.62rem;font-weight:700;padding:1px 5px;border-radius:3px;">${s.domain}</span>`
+                    : '';
+                  const chunkText = s.text ? escapeHtml(s.text) : '';
+                  const cardId = `trace-card-${s.rank}`;
+                  const textId = `chunk-text-${s.rank}`;
+
+                  html += `
+                    <div class="trace-item-card${isLow ? ' low-confidence' : ''}" id="${cardId}">
+                      <div class="trace-card-header">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                          <span class="trace-rank-badge">${s.citation || ('#' + s.rank)}</span>
+                          ${isLow ? '<span style="font-size:0.65rem;color:#ef4444;font-weight:700;">\u26A0\uFE0F LOW</span>' : ''}
+                        </div>
+                        <span class="mono" style="font-size:0.72rem;font-weight:800;color:#0d9488;">${scorePct}% MATCH</span>
+                      </div>
+                      <div style="font-weight:700;font-size:0.82rem;color:var(--ink-primary);margin-bottom:4px;">
+                        &#128196; ${escapeHtml(s.source_file || docName)}
+                        ${s.page_number ? `<span style="font-weight:400;color:var(--ink-secondary);"> &middot; Page ${s.page_number}</span>` : ''}
+                        ${domainTag}
+                      </div>
+                      <div class="trace-score-bar-bg">
+                        <div class="trace-score-bar-fill" style="width:${scorePct}%;background:${scoreBarColor};"></div>
+                      </div>
+                      <div class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);margin-top:4px;">
+                        Chunk: ${s.chunk_id ? s.chunk_id.substring(0,8) + '\u2026' : s.chunk_index}
+                        &middot; Score: ${(s.similarity_score || 0).toFixed(4)}
+                      </div>
+                      ${chunkText ? `
+                        <button class="trace-toggle-btn" onclick="toggleChunkText('${textId}', this)">
+                          &#128269; Show text
+                        </button>
+                        <div id="${textId}" class="trace-chunk-text">${chunkText}</div>
+                      ` : ''}
                     </div>
-                    <div style="font-weight:700;font-size:0.82rem;color:var(--ink-primary);margin-bottom:4px;">
-                      \uD83D\uDCC4 ${escapeHtml(s.source_file)} ${s.page_number ? `\u00B7 Page ${s.page_number}` : ''} ${domainTag}
-                    </div>
-                    <div class="trace-score-bar-bg">
-                      <div class="trace-score-bar-fill" style="width:${scorePct}%;"></div>
-                    </div>
-                    <div class="mono" style="font-size:0.65rem;color:var(--ink-tertiary);">
-                      Chunk Index: ${s.chunk_index} \u00B7 Score: ${s.similarity_score}
-                    </div>
-                  </div>
-                `;
-              }).join('');
+                  `;
+                });
+              });
+
+              traceList.innerHTML = html;
             } else {
+              const emptyMsg = data.clarification_needed
+                ? 'Awaiting clarification \u2014 no retrieval performed.'
+                : 'No matching chunks found above similarity threshold.';
               traceList.innerHTML = `
                 <div style="text-align:center;padding:2rem;color:var(--accent-coral);font-size:0.85rem;font-weight:700;">
-                  &#9888;&#65039; ${data.clarification_needed ? 'Awaiting clarification \u2014 no retrieval performed.' : 'No matching chunks found above threshold.'}
+                  &#9888;&#65039; ${emptyMsg}
                 </div>
               `;
             }
           }
 
         } else {
-          if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">&#10005; Query Failed: ${(data.detail || 'Server error')}</span>`;
+          if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">&#10005; Query Failed: ${escapeHtml(data.detail || 'Server error')}</span>`;
           addToChatHistory('assistant', `Error: ${data.detail || 'Server error'}`);
         }
       } catch (err) {
-        if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">&#10005; Network Error: ${err.message}</span>`;
+        if (answerContent) answerContent.innerHTML = `<span style="color:var(--accent-coral);">&#10005; Network Error: ${escapeHtml(err.message)}</span>`;
         addToChatHistory('assistant', `Network Error: ${err.message}`);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `Ask Knowledge Space &rarr;`;
       }
+    }
+
+    // M3.4 — Toggle chunk text expand/collapse
+    function toggleChunkText(textId, btn) {
+      const el = document.getElementById(textId);
+      if (!el) return;
+      el.classList.toggle('expanded');
+      btn.textContent = el.classList.contains('expanded')
+        ? '\u25B2 Hide text'
+        : '\uD83D\uDD0D Show text';
     }
 
     // Enter key submits query
@@ -2730,15 +2983,102 @@
     }
 
     // ========================================================================
-    // 11. WEB SPEECH API VOICE INTERACTION
+    // 11. WEB SPEECH API — VOICE INPUT + TEXT-TO-SPEECH (M3.3)
     // ========================================================================
+
+    // --- Shared state ---
+    let lastAnswerText = '';              // Set after each successful RAG response
+    let workspaceSpeechRec = null;       // SpeechRecognition for workspace mic
+    let isWorkspaceRecording = false;    // Whether workspace mic is active
+    let ttsVoices = [];                  // Available synthesis voices
+    let ttsSelectedVoice = null;         // Currently selected voice
+
+    // M3 error messages for speech recognition
+    const SPEECH_ERROR_MESSAGES = {
+      'not-allowed'   : 'Microphone access was denied. Allow microphone permission in your browser and try again.',
+      'no-speech'     : 'No speech detected. Please try speaking again.',
+      'network'       : 'Speech recognition requires an internet connection.',
+      'audio-capture' : 'No microphone found. Please connect a microphone.',
+      'aborted'       : 'Voice recording was aborted.',
+      'service-not-allowed': 'Speech recognition is not allowed on this page.',
+    };
+
+    // --------------------------------------------------------------------------
+    // M3.3a: WORKSPACE MIC (in the main query area)
+    // --------------------------------------------------------------------------
+    function toggleWorkspaceMic() {
+      const micBtn = document.getElementById('workspace-mic-btn');
+      const transcriptEl = document.getElementById('workspace-voice-transcript');
+
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        if (transcriptEl) transcriptEl.textContent = 'Voice input not supported in this browser (try Chrome or Edge).';
+        return;
+      }
+
+      if (isWorkspaceRecording) {
+        if (workspaceSpeechRec) workspaceSpeechRec.stop();
+        micBtn.classList.remove('recording');
+        isWorkspaceRecording = false;
+        if (transcriptEl) transcriptEl.textContent = '';
+        return;
+      }
+
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      workspaceSpeechRec = new SpeechRec();
+      workspaceSpeechRec.continuous = false;
+      workspaceSpeechRec.interimResults = true;
+      workspaceSpeechRec.lang = 'en-US';
+
+      workspaceSpeechRec.onstart = () => {
+        isWorkspaceRecording = true;
+        micBtn.classList.add('recording');
+        if (transcriptEl) transcriptEl.textContent = '\uD83C\uDF99\uFE0F Listening\u2026';
+      };
+
+      workspaceSpeechRec.onresult = (event) => {
+        let transcript = '';
+        let isFinal = false;
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+          if (event.results[i].isFinal) isFinal = true;
+        }
+        // Show partial transcript in workspace
+        if (transcriptEl) transcriptEl.textContent = `"${transcript}"`;
+        // Populate input while listening (interim)
+        const queryInput = document.getElementById('main-query-input');
+        if (queryInput) queryInput.value = transcript;
+
+        if (isFinal) {
+          if (transcriptEl) transcriptEl.textContent = `Heard: "${transcript}" \u2014 click Ask to search`;
+        }
+      };
+
+      workspaceSpeechRec.onerror = (event) => {
+        micBtn.classList.remove('recording');
+        isWorkspaceRecording = false;
+        const msg = SPEECH_ERROR_MESSAGES[event.error] || `Speech error: ${event.error}`;
+        if (transcriptEl) transcriptEl.textContent = msg;
+        setTimeout(() => { if (transcriptEl) transcriptEl.textContent = ''; }, 4000);
+      };
+
+      workspaceSpeechRec.onend = () => {
+        micBtn.classList.remove('recording');
+        isWorkspaceRecording = false;
+      };
+
+      workspaceSpeechRec.start();
+    }
+
+    // --------------------------------------------------------------------------
+    // M3.3b: SECTION MIC (in the #voice section — kept for demo)
+    // --------------------------------------------------------------------------
     function toggleVoiceRecognition() {
       const micBtn = document.getElementById('mic-toggle-btn');
       const transcriptDisplay = document.getElementById('voice-transcript-display');
       const statusLabel = document.getElementById('voice-status-label');
 
       if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert('Web Speech API is not supported in this browser. Try Google Chrome or Microsoft Edge.');
+        if (transcriptDisplay) transcriptDisplay.textContent = 'Web Speech API not supported. Try Google Chrome or Microsoft Edge.';
         return;
       }
 
@@ -2746,7 +3086,7 @@
         if (speechRecognition) speechRecognition.stop();
         micBtn.classList.remove('recording');
         isRecordingSpeech = false;
-        statusLabel.textContent = 'Voice input stopped.';
+        if (statusLabel) statusLabel.textContent = 'Voice input stopped.';
         return;
       }
 
@@ -2759,32 +3099,34 @@
       speechRecognition.onstart = () => {
         isRecordingSpeech = true;
         micBtn.classList.add('recording');
-        transcriptDisplay.textContent = 'Listening to your voice\u2026 speak now';
-        statusLabel.textContent = 'AUDIO RECORDING ACTIVE';
+        if (transcriptDisplay) transcriptDisplay.textContent = 'Listening\u2026 speak now';
+        if (statusLabel) statusLabel.textContent = 'AUDIO RECORDING ACTIVE';
       };
 
       speechRecognition.onresult = (event) => {
         let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
+        let isFinal = false;
+        for (let i = event.resultIndex; i < event.results.length; i++) {
           transcript += event.results[i][0].transcript;
+          if (event.results[i].isFinal) isFinal = true;
         }
-        transcriptDisplay.textContent = `"${transcript}"`;
-        if (event.results[0].isFinal) {
+        if (transcriptDisplay) transcriptDisplay.textContent = `"${transcript}"`;
+        if (isFinal) {
           setQueryText(transcript);
-          executeMainQuery();
         }
       };
 
       speechRecognition.onerror = (event) => {
         micBtn.classList.remove('recording');
         isRecordingSpeech = false;
-        statusLabel.textContent = `Speech error: ${event.error}`;
+        const msg = SPEECH_ERROR_MESSAGES[event.error] || `Speech error: ${event.error}`;
+        if (statusLabel) statusLabel.textContent = msg;
       };
 
       speechRecognition.onend = () => {
         micBtn.classList.remove('recording');
         isRecordingSpeech = false;
-        statusLabel.textContent = 'Query transferred to workspace.';
+        if (statusLabel) statusLabel.textContent = 'Query transferred to workspace.';
       };
 
       speechRecognition.start();
@@ -2799,6 +3141,102 @@
       }
     }, 120);
 
+    // --------------------------------------------------------------------------
+    // M3.3c: TEXT-TO-SPEECH (SpeechSynthesis)
+    // --------------------------------------------------------------------------
+
+    function ttsLoadVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const synth = window.speechSynthesis;
+      ttsVoices = synth.getVoices().filter(v => v.lang.startsWith('en'));
+      const select = document.getElementById('tts-voice-select');
+      if (!select) return;
+      select.innerHTML = '';
+      if (ttsVoices.length === 0) {
+        select.innerHTML = '<option value="">Default voice</option>';
+      } else {
+        ttsVoices.forEach((v, i) => {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = `${v.name} (${v.lang})`;
+          if (v.default) { opt.selected = true; ttsSelectedVoice = v; }
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    function ttsVoiceChanged() {
+      const select = document.getElementById('tts-voice-select');
+      if (!select || ttsVoices.length === 0) return;
+      ttsSelectedVoice = ttsVoices[parseInt(select.value)] || null;
+    }
+
+    function _ttsSetButtonStates(speaking) {
+      const speakBtn  = document.getElementById('tts-speak-btn');
+      const pauseBtn  = document.getElementById('tts-pause-btn');
+      const resumeBtn = document.getElementById('tts-resume-btn');
+      const stopBtn   = document.getElementById('tts-stop-btn');
+      if (speakBtn)  { speakBtn.disabled  = speaking; speakBtn.classList.toggle('speaking', speaking); }
+      if (pauseBtn)  { pauseBtn.disabled  = !speaking; }
+      if (resumeBtn) { resumeBtn.disabled = true; }  // enabled only when paused
+      if (stopBtn)   { stopBtn.disabled   = !speaking; }
+    }
+
+    function ttsSpeak() {
+      if (!('speechSynthesis' in window)) {
+        alert('Text-to-speech is not supported in this browser.');
+        return;
+      }
+      if (!lastAnswerText) return;
+
+      const synth = window.speechSynthesis;
+      synth.cancel(); // Clear any pending
+
+      const utt = new SpeechSynthesisUtterance(lastAnswerText);
+      utt.rate  = 1.0;
+      utt.pitch = 1.0;
+      utt.lang  = 'en-US';
+      if (ttsSelectedVoice) utt.voice = ttsSelectedVoice;
+
+      utt.onstart = () => _ttsSetButtonStates(true);
+      utt.onend   = () => _ttsSetButtonStates(false);
+      utt.onerror = (e) => {
+        _ttsSetButtonStates(false);
+        if (e.error !== 'interrupted') {
+          console.warn('[TTS] synthesis error:', e.error);
+        }
+      };
+      utt.onpause  = () => {
+        const resumeBtn = document.getElementById('tts-resume-btn');
+        const pauseBtn  = document.getElementById('tts-pause-btn');
+        if (resumeBtn) resumeBtn.disabled = false;
+        if (pauseBtn)  pauseBtn.disabled  = true;
+      };
+      utt.onresume = () => {
+        const resumeBtn = document.getElementById('tts-resume-btn');
+        const pauseBtn  = document.getElementById('tts-pause-btn');
+        if (resumeBtn) resumeBtn.disabled = true;
+        if (pauseBtn)  pauseBtn.disabled  = false;
+      };
+
+      synth.speak(utt);
+    }
+
+    function ttsPause() {
+      if ('speechSynthesis' in window) window.speechSynthesis.pause();
+    }
+
+    function ttsResume() {
+      if ('speechSynthesis' in window) window.speechSynthesis.resume();
+    }
+
+    function ttsStop() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        _ttsSetButtonStates(false);
+      }
+    }
+
     // ========================================================================
     // INITIALIZATION
     // ========================================================================
@@ -2808,6 +3246,17 @@
       fetchDocumentsList();
       renderChatHistory();
       loadQueryHistory();
+
+      // M3.3 — TTS: load available voices
+      if ('speechSynthesis' in window) {
+        ttsLoadVoices();
+        // Chrome loads voices asynchronously
+        window.speechSynthesis.addEventListener('voiceschanged', ttsLoadVoices);
+      } else {
+        // Hide TTS controls if not supported
+        const ttsControls = document.getElementById('tts-controls');
+        if (ttsControls) ttsControls.style.display = 'none';
+      }
     });
   </script>
 </body>
