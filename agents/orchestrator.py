@@ -133,13 +133,19 @@ class AgentOrchestrator:
         )
 
         # ── Step 2: Resolve pronouns from conversation history ─────────────
-        resolved_query = memory.resolve_references(analysis.normalized_query)
-        if resolved_query != analysis.normalized_query:
+        memory_resolved_query = memory.resolve_references(analysis.normalized_query)
+        if memory_resolved_query != analysis.normalized_query:
             logger.info(
                 "[Orchestrator] Reference resolved: %r → %r",
-                analysis.normalized_query, resolved_query,
+                analysis.normalized_query, memory_resolved_query,
             )
-            analysis.normalized_query = resolved_query
+            analysis.normalized_query = memory_resolved_query
+
+        # M3.2 — resolved_query holds the best query text for vector search:
+        # either the clarification-refined query (from Step 0) or the
+        # memory pronoun-resolved query (from Step 2 above).
+        # NOTE: always assign — avoids UnboundLocalError in clarification cycle.
+        resolved_query = refined_query if refined_query else memory_resolved_query
 
         # Determine whether prior memory context is being used
         used_memory_context = memory.is_topic_continuation(analysis.key_terms)
@@ -260,6 +266,7 @@ class AgentOrchestrator:
                 top_k=top_k,
                 domain_filter=domain_filter,
                 similarity_threshold=similarity_threshold,
+                resolved_query=resolved_query,  # M3.2 — use pronoun-resolved text for vector search
             )
             logger.info("[Orchestrator] Retrieved %d chunks", len(results))
         except Exception as e:

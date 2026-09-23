@@ -78,8 +78,16 @@ INTENT_PATTERNS = [
 
 # Ambiguity signals — pronouns without resolved antecedents, vague open-ended phrases
 AMBIGUITY_PATTERNS = re.compile(
-    r"\b(it|that|this|they|them|those|these|the (previous|last|above))\b"
+    r"\b(it|its|that|this|they|them|their|those|these|the (previous|last|above))\b"
     r"|^(tell me more|more details|explain|go on|continue|and|also)\W*$",
+    re.I,
+)
+
+# Vague relative qualifiers that make a query underspecified without a domain anchor
+VAGUE_QUALIFIER_PATTERN = re.compile(
+    r"\b(relevant|appropriate|suitable|best|good|important|useful|key|main|"
+    r"common|typical|standard|proper|right|correct|necessary|related|similar|"
+    r"effective|efficient|ideal|recommended|possible|available)\b",
     re.I,
 )
 
@@ -214,15 +222,23 @@ class QueryUnderstandingAgent:
 
     def _is_ambiguous(self, query: str, key_terms: List[str]) -> bool:
         """
-        A query is ambiguous when it contains unresolved pronouns or vague
-        open-ended phrases AND does not provide enough substantive content to
-        resolve against the knowledge base.
+        A query is ambiguous when it contains:
+          - Unresolved pronouns / vague open-ended phrases, OR
+          - A vague relative qualifier (relevant, best, suitable…) without
+            enough domain context to disambiguate
+        and does not provide sufficient substantive content to resolve.
         """
-        if not AMBIGUITY_PATTERNS.search(query):
-            return False
-        # If the query has at least 3 meaningful key terms, the pronoun is
-        # likely accompanied by enough context to attempt retrieval.
-        return len(key_terms) < 3
+        # Pronoun / open-ended check
+        if AMBIGUITY_PATTERNS.search(query):
+            # If the query has at least 3 meaningful key terms, enough context.
+            return len(key_terms) < 3
+
+        # Vague-qualifier check: "What are relevant agents?" etc.
+        if VAGUE_QUALIFIER_PATTERN.search(query):
+            # Only flag as ambiguous when there are ≤2 key terms (not enough domain signal)
+            return len(key_terms) <= 2
+
+        return False
 
     def _classify_intent(self, query: str) -> tuple[str, float]:
         """

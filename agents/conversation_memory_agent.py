@@ -125,46 +125,69 @@ class ConversationMemoryAgent:
     # -----------------------------------------------------------------------
 
     _PRONOUNS = re.compile(
-        r"\b(it|that|this|they|them|those|these|the (previous|last|above))\b",
+        r"\b(it|its|that|this|they|them|their|those|these|the (previous|last|above))\b",
         re.I,
     )
 
     def resolve_references(self, query: str) -> str:
         """
-        Resolve pronouns and vague references using tracked entities.
+        Resolve pronouns and vague references using tracked session context.
 
-        Strategy:
-          1. If no pronouns in query → return as-is
-          2. If entities tracked from last turn → substitute with best entity
-          3. If active_topic available → substitute with topic name
-          4. If last assistant message has capitalised noun → substitute (fallback)
-          5. If no context available → return original (let clarification handle)
+        Priority order (most -> least reliable):
+          1. active_key_terms — substantive terms from the user's last query.
+             e.g. ["annual", "leave", "days"] -> "annual leave".
+             Best for vector search as they directly mirror indexed content.
+          2. active_topic — first key term from last query (single-word fallback).
+          3. last_entities — proper nouns from last LLM response, filtered to
+             exclude known boilerplate words (company names, document titles).
+          4. Capitalised noun from last assistant message (broad fallback).
+          5. Return original — let ClarificationAgent request clarification.
         """
         if not self._PRONOUNS.search(query):
             return query
 
-        # Entity-based substitution (most reliable)
-        if self.last_entities:
-            best = self.last_entities[0]
-            resolved = self._PRONOUNS.sub(best, query)
-            return resolved
+        # Words that appear in LLM responses but are NOT useful referents
+        _BOILERPLATE = {
+            "ACME", "CORPORATION", "POLICY", "DOCUMENT", "REFERENCE",
+            "VERSION", "ACCORDING", "SECTION", "BASED",
+        }
 
-        # Active topic substitution
+        # Strategy 1: Use active_key_terms as a phrase (most semantically useful)
+        # e.g. ["annual", "leave", "days"] -> "annual leave"
+        if self.active_key_terms:
+            phrase_terms = [
+                t for t in self.active_key_terms[:3]
+                if len(t) > 2 and t.lower() not in
+                {"the", "are", "was", "has", "for", "and", "its", "it"}
+            ]
+            if phrase_terms:
+                phrase = " ".join(phrase_terms)
+                resolved = self._PRONOUNS.sub(phrase, query)
+                return resolved
+
+        # Strategy 2: active_topic (first key term)
         if self.active_topic:
             resolved = self._PRONOUNS.sub(self.active_topic, query)
             return resolved
 
-        # Fallback: first capitalised noun from last assistant message
+        # Strategy 3: last_entities filtered — skip boilerplate proper nouns
+        if self.last_entities:
+            filtered = [e for e in self.last_entities if e.upper() not in _BOILERPLATE]
+            if filtered:
+                resolved = self._PRONOUNS.sub(filtered[0], query)
+                return resolved
+
+        # Strategy 4: Fallback — first capitalised noun from last assistant message
         last_assistant = next(
             (m.content for m in reversed(self._history) if m.role == "assistant"),
             None,
         )
         if last_assistant:
-            # Exclude [clarification needed] messages
             if "[clarification needed]" not in last_assistant:
                 nouns = re.findall(r"\b[A-Z][a-z]{3,}\b", last_assistant)
-                if nouns:
-                    resolved = self._PRONOUNS.sub(nouns[0], query)
+                useful = [n for n in nouns if n.upper() not in _BOILERPLATE]
+                if useful:
+                    resolved = self._PRONOUNS.sub(useful[0], query)
                     return resolved
 
         # No context to resolve against — return original

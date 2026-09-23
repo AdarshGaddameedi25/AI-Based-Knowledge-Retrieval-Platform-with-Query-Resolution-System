@@ -16,6 +16,149 @@
 
   <style>
     /* ==========================================================================
+       CLARIFICATION REPLY PANEL
+       ========================================================================== */
+    .clarification-panel {
+      background: linear-gradient(135deg, #fff7ed 0%, #fffbf5 100%);
+      border: 1.5px solid #fb923c;
+      border-radius: 16px;
+      padding: 1.25rem 1.4rem;
+      box-shadow: 0 4px 20px rgba(251,146,60,0.12);
+      animation: fadeSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .clarification-panel .clar-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .clarification-panel .clar-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #c2410c;
+      background: #ffedd5;
+      border: 1px solid #fb923c;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .clarification-panel .clar-question {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      line-height: 1.55;
+      margin-bottom: 1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px dashed #fed7aa;
+    }
+
+    .clarification-panel .original-query-bubble {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .clarification-panel .original-query-bubble .oq-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--ink-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .clarification-panel .original-query-bubble .oq-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      font-style: italic;
+    }
+
+    .clar-reply-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .clar-reply-input {
+      flex: 1;
+      border: 1.5px solid #fb923c;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      background: #FFFFFF;
+      outline: none;
+      resize: none;
+      min-height: 44px;
+      max-height: 120px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      line-height: 1.4;
+    }
+
+    .clar-reply-input:focus {
+      border-color: #ea580c;
+      box-shadow: 0 0 0 3px rgba(251,146,60,0.2);
+    }
+
+    .clar-reply-input::placeholder {
+      color: #d4a574;
+      font-weight: 500;
+    }
+
+    .clar-send-btn {
+      background: #c2410c;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0.65rem 1.1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(194,65,12,0.25);
+    }
+
+    .clar-send-btn:hover {
+      background: #9a3412;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(194,65,12,0.35);
+    }
+
+    .clar-send-btn:active {
+      transform: translateY(0);
+    }
+
+    .clar-hint {
+      font-size: 0.7rem;
+      color: var(--ink-tertiary);
+      margin-top: 0.5rem;
+    }
+
+    /* ==========================================================================
        AI-QRS CORE DESIGN SYSTEM
        Theme: Warm Ivory / Paper Laboratory
        ========================================================================== */
@@ -2817,16 +2960,43 @@
 
           // Handle clarification
           if (data.clarification_needed) {
+            // Store the clarification question text for the reply box
+            window._pendingClarificationQuestion = data.answer;
             if (answerContent) {
               answerContent.style.display = 'block';
               answerContent.innerHTML = `
                 ${domainBadgeHtml}${contextBadgeHtml}
-                <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:1rem 1.25rem;">
-                  <div style="font-size:0.8rem;font-weight:700;color:#c2410c;margin-bottom:0.4rem;">&#10067; Clarification Needed</div>
-                  <div style="font-size:0.9rem;color:var(--ink-primary);">${escapeHtml(data.answer)}</div>
-                  <div style="font-size:0.72rem;color:var(--ink-tertiary);margin-top:0.5rem;">Type your clarification in the query box above and press Enter.</div>
+                <div class="clarification-panel" id="clarification-panel">
+                  <div class="clar-header">
+                    <span class="clar-badge">&#10067; Clarification Needed</span>
+                    ${data.detected_domain ? `<span style="background:#ede9fe;color:#7c3aed;font-size:0.62rem;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;">&#127991;&#65039; ${escapeHtml(data.detected_domain)}</span>` : ''}
+                  </div>
+                  <div class="original-query-bubble">
+                    <span class="oq-label">Your query</span>
+                    <span class="oq-text">&ldquo;${escapeHtml(query)}&rdquo;</span>
+                  </div>
+                  <div class="clar-question">${escapeHtml(data.answer)}</div>
+                  <div class="clar-reply-row">
+                    <textarea
+                      id="clar-reply-input"
+                      class="clar-reply-input"
+                      placeholder="Type your clarification here&hellip;"
+                      rows="1"
+                      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+                      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitClarification();}"
+                    ></textarea>
+                    <button class="clar-send-btn" onclick="submitClarification()">
+                      Reply &rarr;
+                    </button>
+                  </div>
+                  <div class="clar-hint">Press <kbd style="background:#f3f4f6;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px;font-size:0.65rem;">Enter</kbd> to send &nbsp;&middot;&nbsp; <kbd style="background:#f3f4f6;border:1px solid #d1d5db;border-radius:3px;padding:1px 4px;font-size:0.65rem;">Shift+Enter</kbd> for new line</div>
                 </div>
               `;
+              // Auto-focus the reply input
+              setTimeout(() => {
+                const ri = document.getElementById('clar-reply-input');
+                if (ri) ri.focus();
+              }, 80);
             }
             addToChatHistory('assistant', data.answer, {
               clarification_needed: true,
@@ -2951,6 +3121,30 @@
         btn.disabled = false;
         btn.innerHTML = `Ask Knowledge Space &rarr;`;
       }
+    }
+
+    // ========================================================================
+    // 9b. CLARIFICATION INLINE REPLY HANDLER
+    // ========================================================================
+    function submitClarification() {
+      const ri = document.getElementById('clar-reply-input');
+      if (!ri) return;
+      const reply = ri.value.trim();
+      if (!reply) { ri.focus(); return; }
+
+      // Visually disable the panel while submitting
+      const panel = document.getElementById('clarification-panel');
+      if (panel) {
+        panel.style.opacity = '0.55';
+        panel.style.pointerEvents = 'none';
+      }
+
+      // Put the reply into the main query box and submit normally
+      const mainInput = document.getElementById('main-query-input');
+      if (mainInput) mainInput.value = reply;
+
+      // Execute
+      executeMainQuery();
     }
 
     // M3.4 — Toggle chunk text expand/collapse

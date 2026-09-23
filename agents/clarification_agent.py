@@ -51,13 +51,22 @@ class ClarificationState:
 
 # Pronouns/phrases that are genuinely ambiguous only when query has too few terms
 _PRONOUN_PATTERNS = re.compile(
-    r"\b(it|that|this|they|them|those|these|the (previous|last|above))\b",
+    r"\b(it|its|that|this|they|them|their|those|these|the (previous|last|above))\b",
     re.I,
 )
 
 # Open-ended follow-up phrases — always ambiguous
 _FOLLOW_UP_PATTERNS = re.compile(
     r"^(tell me more|more details?|explain|go on|continue|and|also)[\.\?]?\s*$",
+    re.I,
+)
+
+# Vague relative qualifiers — "relevant", "appropriate", "best", etc.
+# These make a query underspecified without a domain anchor.
+_VAGUE_QUALIFIER_PATTERN = re.compile(
+    r"\b(relevant|appropriate|suitable|best|good|important|useful|key|main|"
+    r"common|typical|standard|proper|right|correct|necessary|related|similar|"
+    r"effective|efficient|ideal|recommended|possible|available)\b",
     re.I,
 )
 
@@ -253,6 +262,24 @@ class ClarificationAgent:
                 )
             return "Could you clarify what 'it' or 'this' refers to in your question?"
 
+        # Vague qualifier — "relevant", "best", "suitable", etc.
+        if _VAGUE_QUALIFIER_PATTERN.search(query_lower):
+            qualifier_match = _VAGUE_QUALIFIER_PATTERN.search(query_lower)
+            qualifier = qualifier_match.group(0) if qualifier_match else "relevant"
+            if key_terms:
+                # Filter out the qualifier word itself from key_terms for the example
+                content_terms = [t for t in key_terms if not _VAGUE_QUALIFIER_PATTERN.match(t)]
+                if content_terms:
+                    return (
+                        f"Could you clarify what '{qualifier}' means in context? "
+                        f"For example, are you asking about {content_terms[0]} "
+                        f"in a specific domain (HR, Technology, Legal)?"
+                    )
+            return (
+                f"Could you provide more context? '{qualifier.capitalize()}' "
+                f"depends on a specific topic or domain — which area are you asking about?"
+            )
+
         # Generic fallback
         return "Could you please provide more context or rephrase your question?"
 
@@ -301,11 +328,20 @@ class ClarificationAgent:
             "requirements", "benefits", "steps", "process", "policy",
             "rules", "guidelines", "procedure", "criteria", "conditions",
             "details", "information", "stuff", "things", "points",
+            "agents", "methods", "approaches", "techniques", "tools",
+            "features", "options", "solutions", "types", "ways",
         }
         # If all key terms are vague nouns and no history exists → ambiguous
         if key_terms and all(t.lower() in _VAGUE_NOUNS for t in key_terms):
             if not history:
                 return "query contains only vague nouns without domain context", True
+
+        # Rule 4b: vague qualifier adjective without enough domain context
+        # Catches queries like "What are relevant agents?" or "What are the best tools?"
+        # where the qualifier (relevant / best) makes the noun underspecified.
+        if _VAGUE_QUALIFIER_PATTERN.search(query_lower):
+            if len(key_terms) <= 2 and not history:
+                return "query uses a relative qualifier without sufficient domain context", True
 
         # Rule 5: single word / two words with no domain signal
         if len(stripped.split()) <= 2 and not history and not key_terms:
