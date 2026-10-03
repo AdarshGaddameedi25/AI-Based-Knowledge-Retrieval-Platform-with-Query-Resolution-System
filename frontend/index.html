@@ -1718,6 +1718,7 @@
         <li><a href="#rag-engine">RAG Pipeline</a></li>
         <li><a href="#workspace">Query Workspace</a></li>
         <li><a href="#agents">Multi-Agent</a></li>
+        <li><a href="#analytics">Analytics</a></li>
         <li><a href="#voice">Voice API</a></li>
       </ul>
 
@@ -2348,7 +2349,195 @@
           <span class="mono" id="voice-status-label" style="color: var(--ink-tertiary); font-size: 0.75rem;">
             POWERED BY BROWSER WEB SPEECH API &amp; PGVECTOR
           </span>
+    <!-- ========================================================================
+         SECTION 11: M4 ANALYTICS DASHBOARD
+         ======================================================================== -->
+    <section id="analytics" class="section-analytics" style="padding: 5rem 0; background: var(--bg-surface-subtle); border-top: 1px solid var(--border-subtle);">
+      <div class="container">
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div class="section-eyebrow">
+              <span class="dot"></span>
+              MILESTONE 4 ANALYTICS &amp; TELEMETRY
+            </div>
+            <h2 style="font-size: 2.2rem; line-height: 1.1; margin-top: 0.25rem;">Analytics Dashboard</h2>
+            <p style="color: var(--ink-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+              Real-time query performance, retrieval accuracy, domain metrics, and knowledge gap tracking.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <select id="analytics-timeframe-select" class="param-select" onchange="refreshAnalyticsDashboard()" style="padding: 0.5rem 0.85rem; font-weight: 700; font-size: 0.82rem;">
+              <option value="7">Last 7 Days</option>
+              <option value="30" selected>Last 30 Days</option>
+              <option value="90">Last 90 Days</option>
+            </select>
+
+            <button class="btn btn-outline" style="padding: 0.5rem 1.1rem; font-size: 0.82rem;" onclick="refreshAnalyticsDashboard()">
+              &#8635; Refresh Telemetry
+            </button>
+          </div>
         </div>
+
+        <!-- Dashboard Status Banner (Loading / Error / Empty) -->
+        <div id="analytics-status-banner" style="display: none; margin-bottom: 1.5rem; padding: 1rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.88rem;"></div>
+
+        <!-- Overview KPI Grid -->
+        <div class="hero-metrics" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2.5rem; padding-top: 0; border-top: none;">
+          
+          <div class="metric-card" style="background: var(--bg-base); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="metric-label">TOTAL QUERIES</span>
+              <span style="font-size: 1.2rem;">&#128202;</span>
+            </div>
+            <span class="metric-value" id="an-total-queries" style="margin-top:0.5rem; font-size: 2.1rem;">--</span>
+            <span id="an-sub-answered" style="font-size: 0.72rem; color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; margin-top: 4px;">-- answered</span>
+          </div>
+
+          <div class="metric-card" style="background: var(--bg-base); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="metric-label">KNOWLEDGE GAPS</span>
+              <span style="font-size: 1.2rem;">&#9888;</span>
+            </div>
+            <span class="metric-value" id="an-knowledge-gaps" style="margin-top:0.5rem; font-size: 2.1rem; color: #b91c1c;">--</span>
+            <span id="an-sub-clarifications" style="font-size: 0.72rem; color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; margin-top: 4px;">-- clarifications</span>
+          </div>
+
+          <div class="metric-card" style="background: var(--bg-base); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="metric-label">RETRIEVAL ACCURACY</span>
+              <span style="font-size: 1.2rem;">&#127919;</span>
+            </div>
+            <span class="metric-value" id="an-retrieval-rate" style="margin-top:0.5rem; font-size: 2.1rem; color: #047857;">--%</span>
+            <span id="an-sub-similarity" style="font-size: 0.72rem; color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; margin-top: 4px;">-- avg similarity</span>
+          </div>
+
+          <div class="metric-card" style="background: var(--bg-base); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-medium);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="metric-label">AVG LATENCY</span>
+              <span style="font-size: 1.2rem;">&#9889;</span>
+            </div>
+            <span class="metric-value" id="an-avg-latency" style="margin-top:0.5rem; font-size: 2.1rem;">-- ms</span>
+            <span id="an-sub-chunks" style="font-size: 0.72rem; color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; margin-top: 4px;">-- avg chunks</span>
+          </div>
+
+        </div>
+
+        <!-- Distributions & Topics Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+          
+          <!-- Query Types Distribution -->
+          <div style="background: var(--bg-base); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Query Types</h4>
+            <span class="mono" style="font-size: 0.65rem; color: var(--ink-tertiary);">INTENT CLASSIFICATION</span>
+            <div id="an-types-list" style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+              <div style="color: var(--ink-tertiary); font-size: 0.8rem;">Loading intent breakdown&hellip;</div>
+            </div>
+          </div>
+
+          <!-- Domain Breakdown -->
+          <div style="background: var(--bg-base); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Knowledge Domains</h4>
+            <span class="mono" style="font-size: 0.65rem; color: var(--ink-tertiary);">HR &middot; TECHNOLOGY &middot; FINANCE</span>
+            <div id="an-domains-list" style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+              <div style="color: var(--ink-tertiary); font-size: 0.8rem;">Loading domain breakdown&hellip;</div>
+            </div>
+          </div>
+
+          <!-- Frequently Queried Terms -->
+          <div style="background: var(--bg-base); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.5rem;">
+            <h4 style="font-size: 1rem; margin-bottom: 0.25rem;">Top Search Keywords</h4>
+            <span class="mono" style="font-size: 0.65rem; color: var(--ink-tertiary);">FREQUENT TERMS IN QUERIES</span>
+            <div id="an-terms-cloud" style="margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="color: var(--ink-tertiary); font-size: 0.8rem;">Loading terms&hellip;</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Knowledge Gap Panel -->
+        <div style="background: var(--bg-base); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h4 style="font-size: 1.1rem; margin-bottom: 2px;">Tracked Knowledge Gaps</h4>
+              <p style="font-size: 0.78rem; color: var(--ink-secondary);">Queries with zero context or similarity scores below application threshold</p>
+            </div>
+            <span style="background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 6px;">
+              Auto-Tracked
+            </span>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="border-bottom: 1.5px solid var(--border-medium); color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;">
+                  <th style="padding: 0.6rem 0.8rem;">ORIGINAL QUERY</th>
+                  <th style="padding: 0.6rem 0.8rem;">DOMAIN</th>
+                  <th style="padding: 0.6rem 0.8rem;">FREQUENCY</th>
+                  <th style="padding: 0.6rem 0.8rem;">REASON</th>
+                  <th style="padding: 0.6rem 0.8rem;">BEST SIMILARITY</th>
+                  <th style="padding: 0.6rem 0.8rem;">LAST SEEN</th>
+                  <th style="padding: 0.6rem 0.8rem;">STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="an-gaps-table-body">
+                <tr><td colspan="7" style="padding: 1.5rem; text-align: center; color: var(--ink-tertiary);">Loading knowledge gap records&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Query Analytics Log Table -->
+        <div style="background: var(--bg-base); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 1.75rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <h4 style="font-size: 1.1rem; margin-bottom: 2px;">Query Analytics History</h4>
+              <p style="font-size: 0.78rem; color: var(--ink-secondary);">Complete telemetry stream recorded for every resolution turn</p>
+            </div>
+
+            <!-- Filters -->
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="text" id="an-filter-search" placeholder="Search query text..." onkeyup="fetchAnalyticsQueries()" style="border: 1px solid var(--border-medium); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem;" />
+              
+              <select id="an-filter-domain" onchange="fetchAnalyticsQueries()" style="border: 1px solid var(--border-medium); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem;">
+                <option value="">All Domains</option>
+                <option value="hr">HR</option>
+                <option value="technology">Technology</option>
+                <option value="finance">Finance</option>
+              </select>
+
+              <select id="an-filter-status" onchange="fetchAnalyticsQueries()" style="border: 1px solid var(--border-medium); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem;">
+                <option value="">All Statuses</option>
+                <option value="answered">Answered</option>
+                <option value="knowledge_gap">Knowledge Gap</option>
+                <option value="clarification">Clarification</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem;">
+              <thead>
+                <tr style="border-bottom: 1.5px solid var(--border-medium); color: var(--ink-secondary); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;">
+                  <th style="padding: 0.6rem 0.7rem;">TIMESTAMP</th>
+                  <th style="padding: 0.6rem 0.7rem;">QUERY</th>
+                  <th style="padding: 0.6rem 0.7rem;">TYPE</th>
+                  <th style="padding: 0.6rem 0.7rem;">DOMAIN</th>
+                  <th style="padding: 0.6rem 0.7rem;">ROUTING</th>
+                  <th style="padding: 0.6rem 0.7rem;">CHUNKS</th>
+                  <th style="padding: 0.6rem 0.7rem;">SIMILARITY</th>
+                  <th style="padding: 0.6rem 0.7rem;">LATENCY</th>
+                  <th style="padding: 0.6rem 0.7rem;">STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="an-queries-table-body">
+                <tr><td colspan="9" style="padding: 1.5rem; text-align: center; color: var(--ink-tertiary);">Loading query analytics log&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
@@ -3432,6 +3621,193 @@
     }
 
     // ========================================================================
+    // M4 ANALYTICS DASHBOARD API BINDINGS
+    // ========================================================================
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function refreshAnalyticsDashboard() {
+      const timeframe = document.getElementById('analytics-timeframe-select')?.value || 30;
+      const statusBanner = document.getElementById('analytics-status-banner');
+      if (statusBanner) { statusBanner.style.display = 'none'; }
+
+      try {
+        await Promise.all([
+          fetchAnalyticsOverview(timeframe),
+          fetchAnalyticsDomains(timeframe),
+          fetchAnalyticsTypes(timeframe),
+          fetchAnalyticsGaps(),
+          fetchAnalyticsQueries(),
+          fetchAnalyticsTerms(timeframe)
+        ]);
+      } catch (err) {
+        console.error('[Analytics] Dashboard refresh error:', err);
+        if (statusBanner) {
+          statusBanner.style.display = 'block';
+          statusBanner.style.background = '#fee2e2';
+          statusBanner.style.color = '#991b1b';
+          statusBanner.style.border = '1px solid #fca5a5';
+          statusBanner.innerHTML = `⚠️ Failed to fetch telemetry data from server: ${escapeHtml(err.message)}`;
+        }
+      }
+    }
+
+    async function fetchAnalyticsOverview(days = 30) {
+      const res = await fetch(`${API_BASE}/api/analytics/overview?days=${days}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      document.getElementById('an-total-queries').textContent = data.total_queries ?? 0;
+      document.getElementById('an-knowledge-gaps').textContent = data.knowledge_gap_queries ?? 0;
+      document.getElementById('an-retrieval-rate').textContent = `${(data.retrieval_accuracy_rate ?? 0).toFixed(1)}%`;
+      document.getElementById('an-avg-latency').textContent = `${Math.round(data.avg_latency_ms ?? 0)} ms`;
+
+      document.getElementById('an-sub-answered').textContent = `${data.answered_queries ?? 0} answered`;
+      document.getElementById('an-sub-clarifications').textContent = `${data.clarification_queries ?? 0} clarifications`;
+      document.getElementById('an-sub-similarity').textContent = `${(data.avg_similarity_score ?? 0).toFixed(3)} avg similarity`;
+      document.getElementById('an-sub-chunks').textContent = `${(data.avg_retrieved_chunks ?? 0).toFixed(1)} avg chunks`;
+    }
+
+    async function fetchAnalyticsTypes(days = 30) {
+      const container = document.getElementById('an-types-list');
+      if (!container) return;
+      const res = await fetch(`${API_BASE}/api/analytics/types?days=${days}`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (!data.distributions || data.distributions.length === 0) {
+        container.innerHTML = '<div style="color: var(--ink-tertiary); font-size: 0.8rem;">No query type data recorded yet.</div>';
+        return;
+      }
+
+      container.innerHTML = data.distributions.map(d => `
+        <div>
+          <div style="display:flex; justify-space-between; font-size:0.78rem; font-weight:700; margin-bottom:4px;">
+            <span style="text-transform:capitalize;">${escapeHtml(d.type)}</span>
+            <span>${d.count} (${d.percentage.toFixed(1)}%)</span>
+          </div>
+          <div style="background:var(--border-subtle); height:6px; border-radius:3px; overflow:hidden;">
+            <div style="background:var(--ink-primary); height:100%; width:${d.percentage}%;"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchAnalyticsDomains(days = 30) {
+      const container = document.getElementById('an-domains-list');
+      if (!container) return;
+      const res = await fetch(`${API_BASE}/api/analytics/domains?days=${days}`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (!data.domains || data.domains.length === 0) {
+        container.innerHTML = '<div style="color: var(--ink-tertiary); font-size: 0.8rem;">No domain data recorded yet.</div>';
+        return;
+      }
+
+      container.innerHTML = data.domains.map(d => `
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:0.78rem; font-weight:700; margin-bottom:4px;">
+            <span style="text-transform:uppercase; font-family:'JetBrains Mono';">${escapeHtml(d.domain)}</span>
+            <span>${d.count} (${d.percentage.toFixed(1)}%)</span>
+          </div>
+          <div style="background:var(--border-subtle); height:6px; border-radius:3px; overflow:hidden;">
+            <div style="background:#0d9488; height:100%; width:${d.percentage}%;"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchAnalyticsTerms(days = 30) {
+      const container = document.getElementById('an-terms-cloud');
+      if (!container) return;
+      const res = await fetch(`${API_BASE}/api/analytics/terms?days=${days}&limit=15`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (!data.terms || data.terms.length === 0) {
+        container.innerHTML = '<div style="color: var(--ink-tertiary); font-size: 0.8rem;">No terms extracted yet.</div>';
+        return;
+      }
+
+      container.innerHTML = data.terms.map(t => `
+        <span style="background:var(--bg-surface-subtle); border:1px solid var(--border-medium); border-radius:6px; padding:3px 8px; font-size:0.72rem; font-weight:700; font-family:'JetBrains Mono'; color:var(--ink-primary);">
+          ${escapeHtml(t.term)} <span style="color:var(--ink-tertiary);">(${t.frequency})</span>
+        </span>
+      `).join('');
+    }
+
+    async function fetchAnalyticsGaps() {
+      const tbody = document.getElementById('an-gaps-table-body');
+      if (!tbody) return;
+      const res = await fetch(`${API_BASE}/api/analytics/gaps?limit=10`);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (!data.gaps || data.gaps.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="padding:1.5rem; text-align:center; color:var(--ink-tertiary);">No knowledge gaps detected yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.gaps.map(g => `
+        <tr style="border-bottom:1px solid var(--border-subtle);">
+          <td style="padding:0.6rem 0.8rem; font-weight:600;">${escapeHtml(g.original_query)}</td>
+          <td style="padding:0.6rem 0.8rem; font-family:'JetBrains Mono'; font-size:0.72rem; text-transform:uppercase;">${escapeHtml(g.domain || 'unspecified')}</td>
+          <td style="padding:0.6rem 0.8rem; font-weight:800; color:#b91c1c;">${g.frequency}</td>
+          <td style="padding:0.6rem 0.8rem; font-size:0.75rem;">${escapeHtml(g.reason)}</td>
+          <td style="padding:0.6rem 0.8rem; font-family:'JetBrains Mono'; font-size:0.75rem;">${g.best_similarity_score !== null ? g.best_similarity_score.toFixed(3) : '0.000'}</td>
+          <td style="padding:0.6rem 0.8rem; font-size:0.72rem; color:var(--ink-secondary);">${g.last_seen ? new Date(g.last_seen).toLocaleString() : '-'}</td>
+          <td style="padding:0.6rem 0.8rem;"><span style="background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:800;">${escapeHtml(g.status)}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    async function fetchAnalyticsQueries() {
+      const tbody = document.getElementById('an-queries-table-body');
+      if (!tbody) return;
+
+      const domain = document.getElementById('an-filter-domain')?.value || '';
+      const status = document.getElementById('an-filter-status')?.value || '';
+      const search = document.getElementById('an-filter-search')?.value || '';
+
+      let url = `${API_BASE}/api/analytics/queries?limit=15`;
+      if (domain) url += `&domain=${encodeURIComponent(domain)}`;
+      if (status) url += `&status=${encodeURIComponent(status)}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (!data.records || data.records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="padding:1.5rem; text-align:center; color:var(--ink-tertiary);">No matching query analytics records found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.records.map(r => `
+        <tr style="border-bottom:1px solid var(--border-subtle);">
+          <td style="padding:0.55rem 0.7rem; font-size:0.72rem; color:var(--ink-secondary); whitespace:nowrap;">${new Date(r.timestamp).toLocaleTimeString()}</td>
+          <td style="padding:0.55rem 0.7rem; font-weight:600; max-width:260px; overflow:hidden; text-overflow:ellipsis; whitespace:nowrap;">${escapeHtml(r.original_query)}</td>
+          <td style="padding:0.55rem 0.7rem; font-family:'JetBrains Mono'; font-size:0.7rem;">${escapeHtml(r.query_type)}</td>
+          <td style="padding:0.55rem 0.7rem; font-family:'JetBrains Mono'; font-size:0.7rem; text-transform:uppercase;">${escapeHtml(r.detected_domain || 'unspecified')}</td>
+          <td style="padding:0.55rem 0.7rem; font-size:0.72rem;">${escapeHtml(r.routing_path)}</td>
+          <td style="padding:0.55rem 0.7rem; font-family:'JetBrains Mono';">${r.retrieved_chunks}</td>
+          <td style="padding:0.55rem 0.7rem; font-family:'JetBrains Mono'; font-size:0.72rem;">${r.avg_similarity_score !== null ? r.avg_similarity_score.toFixed(3) : '0.000'}</td>
+          <td style="padding:0.55rem 0.7rem; font-family:'JetBrains Mono'; font-size:0.72rem;">${Math.round(r.response_latency_ms || 0)} ms</td>
+          <td style="padding:0.55rem 0.7rem;"><span style="background:${r.knowledge_gap ? '#fee2e2' : '#dcfce7'}; color:${r.knowledge_gap ? '#991b1b' : '#166534'}; padding:2px 6px; border-radius:4px; font-size:0.68rem; font-weight:800;">${escapeHtml(r.response_status)}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // ========================================================================
     // INITIALIZATION
     // ========================================================================
     window.addEventListener('DOMContentLoaded', () => {
@@ -3440,6 +3816,7 @@
       fetchDocumentsList();
       renderChatHistory();
       loadQueryHistory();
+      refreshAnalyticsDashboard();
 
       // M3.3 — TTS: load available voices
       if ('speechSynthesis' in window) {

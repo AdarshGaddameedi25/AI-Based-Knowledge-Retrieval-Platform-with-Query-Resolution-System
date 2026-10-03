@@ -16,7 +16,12 @@ class Settings(BaseSettings):
     chunk_size: int = 500
     chunk_overlap: int = 50
     top_k_results: int = 5
-    similarity_threshold: float = 0.2
+
+    # Threshold Settings (Cosine Similarity)
+    similarity_threshold: float = 0.2       # Minimum cosine similarity for vector retrieval
+    low_confidence_threshold: float = 0.35   # Similarity cutoff for flagging low-confidence evidence in telemetry
+    knowledge_gap_threshold: float = 0.2     # Cutoff below which lack of evidence records a knowledge gap
+
     max_session_history: int = 10
 
     api_host: str = "0.0.0.0"

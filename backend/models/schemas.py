@@ -1,17 +1,17 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 import uuid
 
 
 class DocumentModel(BaseModel):
-    document_id: str = str(uuid.uuid4())
+    document_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     file_name: str
     file_type: str
     file_size: int
-    upload_date: str = datetime.utcnow().isoformat()
+    upload_date: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     status: str = "pending"
-    metadata: dict = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class ChunkModel(BaseModel):
@@ -21,15 +21,15 @@ class ChunkModel(BaseModel):
     text: str
     token_count: int
     page_number: Optional[int] = None
-    metadata: dict = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class QueryModel(BaseModel):
-    query_id: str = str(uuid.uuid4())
+    query_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     query_text: str
-    timestamp: str = datetime.utcnow().isoformat()
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     detected_intent: Optional[str] = None
-    key_terms: list[str] = []
+    key_terms: List[str] = Field(default_factory=list)
 
 
 class RetrievalResultModel(BaseModel):
@@ -39,18 +39,18 @@ class RetrievalResultModel(BaseModel):
     text: str
     similarity_score: float
     rank: int
-    metadata: dict = {}
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
 
 class ResponseModel(BaseModel):
-    response_id: str = str(uuid.uuid4())
+    response_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     query: str
     answer: str
-    citations: list[dict] = []
-    timestamp: str = datetime.utcnow().isoformat()
+    citations: List[Dict[str, Any]] = Field(default_factory=list)
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
 
 class ConversationMessageModel(BaseModel):
     role: str
     content: str
-    timestamp: str = datetime.utcnow().isoformat()
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
