@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import (
     Column, String, Integer, Float, Text, DateTime,
-    ForeignKey, JSON, BigInteger
+    ForeignKey, JSON, BigInteger, Boolean
 )
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
@@ -92,3 +92,74 @@ class Response(Base):
     timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     query = relationship("Query", back_populates="response")
+
+
+class QueryAnalytics(Base):
+    """
+    M4.1 — Query analytics record.
+    Stores full lifecycle metadata for every query processed by the orchestrator.
+    Separate from the core knowledge-base tables.
+    """
+    __tablename__ = "query_analytics"
+
+    analytics_id = Column(String, primary_key=True, default=_uuid)
+    query_id = Column(String, nullable=True, index=True)          # FK-like link; nullable if not persisted
+    session_id = Column(String, nullable=True, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+    # Query text
+    original_query = Column(Text, nullable=False)
+    normalized_query = Column(Text, nullable=True)
+
+    # Classification
+    query_type = Column(String, nullable=True)            # factual | procedural | comparative | ambiguous | direct
+    detected_intent = Column(String, nullable=True)
+    detected_domain = Column(String, nullable=True, index=True)
+
+    # Routing
+    routing_path = Column(String, nullable=True)          # retrieval | clarification | direct
+
+    # Clarification
+    clarification_required = Column(Boolean, default=False, nullable=False)
+    clarification_count = Column(Integer, default=0, nullable=False)
+
+    # Retrieval
+    retrieval_count = Column(Integer, default=0, nullable=False)
+    retrieved_chunks = Column(Integer, default=0, nullable=False)
+    best_similarity_score = Column(Float, nullable=True)
+    avg_similarity_score = Column(Float, nullable=True)
+    source_count = Column(Integer, default=0, nullable=False)
+
+    # Response
+    response_status = Column(String, nullable=True)        # answered | knowledge_gap | error | clarification
+    response_generated = Column(Boolean, default=False, nullable=False)
+    knowledge_gap = Column(Boolean, default=False, nullable=False, index=True)
+    knowledge_gap_reason = Column(Text, nullable=True)
+
+    # Performance
+    response_latency_ms = Column(Float, nullable=True)
+
+    # Key terms (stored as JSON list)
+    key_terms = Column(JSON, default=list)
+
+
+class KnowledgeGap(Base):
+    """
+    M4.1 — Knowledge gap record.
+    Created when a query cannot be answered due to insufficient evidence.
+    Supports deduplication/grouping of repeated gaps.
+    """
+    __tablename__ = "knowledge_gaps"
+
+    gap_id = Column(String, primary_key=True, default=_uuid)
+    normalized_query = Column(Text, nullable=False, index=True)
+    original_query = Column(Text, nullable=False)
+    domain = Column(String, nullable=True, index=True)
+    reason = Column(Text, nullable=True)                   # e.g. "no_chunks_retrieved" | "below_threshold" | "repeated_unanswered"
+    first_seen = Column(DateTime, default=datetime.utcnow, nullable=False)
+    last_seen = Column(DateTime, default=datetime.utcnow, nullable=False)
+    frequency = Column(Integer, default=1, nullable=False)
+    best_similarity_score = Column(Float, nullable=True)
+    retrieval_count = Column(Integer, default=0, nullable=False)
+    session_id = Column(String, nullable=True)
+    status = Column(String, default="detected", nullable=False)  # detected | reviewed | resolved

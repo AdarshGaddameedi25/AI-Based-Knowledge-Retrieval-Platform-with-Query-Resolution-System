@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from config.settings import settings
-from backend.api.routes import ingest, query, health, history
+from backend.api.routes import ingest, query, health, history, analytics
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level.upper(), logging.INFO),
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan: startup tasks → yield → (shutdown tasks if any)."""
-    logger.info("Starting AI Knowledge Retrieval Platform v2.1 (Milestone 2)")
+    logger.info("Starting AI Knowledge Retrieval Platform v4.0 (Milestone 4)")
     logger.info("LLM: %s via OpenRouter", settings.llm_model)
     logger.info("Embedding: %s (local, 384-dim)", settings.embedding_model)
     logger.info("Similarity threshold: %s", settings.similarity_threshold)
@@ -37,9 +37,9 @@ app = FastAPI(
     title="AI-Based Knowledge Retrieval Platform",
     description=(
         "Production RAG system — PostgreSQL + pgvector + OpenRouter + Multi-Agent Orchestration. "
-        "Milestone 2: Query Understanding, Retrieval, Response Generation, Orchestration."
+        "Milestone 4: Analytics, Knowledge-Gap Detection, End-to-End Testing, Optimization."
     ),
-    version="2.1.0",
+    version="4.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
     lifespan=lifespan,
@@ -57,6 +57,7 @@ app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(ingest.router, prefix="/api", tags=["Documents"])
 app.include_router(query.router, prefix="/api", tags=["Query"])
 app.include_router(history.router, prefix="/api", tags=["History & Stats"])
+app.include_router(analytics.router, prefix="/api", tags=["Analytics"])
 
 import os
 if os.path.exists("frontend"):

@@ -160,6 +160,15 @@ Response:
 }
 ```
 
+### GET /api/analytics/overview
+Returns summary metrics (total queries, answered queries, knowledge gaps, clarification rate, retrieval accuracy rate, average similarity score, average latency).
+
+### GET /api/analytics/gaps
+Returns tracked knowledge gaps (queries with no matching context or low confidence scores) aggregated by frequency and domain.
+
+### GET /api/analytics/queries
+Paginated search over query logs with filtering by domain, status, date range, and search keyword.
+
 ### GET /docs
 Swagger UI (interactive API documentation).
 
@@ -169,22 +178,20 @@ Swagger UI (interactive API documentation).
 2. `alembic upgrade head`
 3. `uvicorn backend.main:app --reload`
 4. Open http://localhost:8000
-5. Upload `fmla_employee_guide.pdf` via the Upload panel
-6. Upload `technology_knowledge_base.csv`
-7. Ask: "What is FMLA?" → Grounded answer + source page citation
-8. Ask: "What is the employee maternity leave policy of Infosys?" → "I could not find an answer..."
+5. Upload `fmla_employee_guide.pdf` (HR domain)
+6. Upload `technology_knowledge_base.csv` (Technology domain)
+7. Upload `finance_policy.txt` (Finance domain)
+8. Ask: "What is FMLA?" → Grounded answer + source page citation
+9. Ask: "What is the employee maternity leave policy of Infosys?" → Knowledge gap recorded + controlled fallback answer
 
 ## Running Tests
 
 ```bash
-# Unit tests (no database required)
-pytest tests/test_ingestion.py tests/test_rag.py tests/test_retrieval.py -v
+# Milestone 4 comprehensive test suite (Analytics, 3-domain workflow, RAG, Memory)
+pytest tests/test_m4_milestone.py -v
 
-# Integration tests (requires PostgreSQL + pgvector)
-pytest tests/test_database.py -v
-
-# All tests
-pytest tests/ -v
+# Full test suite (M2, M3, M4, Orchestrator)
+pytest tests/test_m4_milestone.py tests/test_m3_milestone.py tests/test_m2_milestone.py tests/test_orchestrator.py -v
 ```
 
 ## Supported File Types
@@ -206,6 +213,8 @@ pytest tests/ -v
 | queries | Query log |
 | retrieval_results | Per-query retrieval log |
 | responses | LLM response log |
+| query_analytics | M4 query analytics, routing paths, latency & similarity metrics |
+| knowledge_gaps | M4 tracked missing topics, frequency, status & resolution notes |
 
 ## Limitations
 
@@ -214,3 +223,4 @@ pytest tests/ -v
 - LLM via OpenRouter (rate limits apply)
 - DOCX table extraction not yet implemented
 - No authentication/authorization (development mode)
+

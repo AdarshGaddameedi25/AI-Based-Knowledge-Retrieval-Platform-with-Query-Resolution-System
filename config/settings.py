@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     chunk_size: int = 500
     chunk_overlap: int = 50
     top_k_results: int = 5
-    similarity_threshold: float = 0.3
+    similarity_threshold: float = 0.2
     max_session_history: int = 10
 
     api_host: str = "0.0.0.0"

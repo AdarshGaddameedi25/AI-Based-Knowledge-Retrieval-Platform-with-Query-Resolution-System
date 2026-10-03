@@ -317,8 +317,10 @@ class ClarificationAgent:
                 return "short pronoun query with insufficient context", True
 
         # Rule 3: pronoun present, few key terms, no prior conversation
+        # NOTE: If memory resolved the pronoun, the orchestrator skips this check
+        # entirely. This rule only fires when resolution truly failed (no history).
         if _PRONOUN_PATTERNS.search(query):
-            if len(key_terms) < 3 and not history:
+            if len(key_terms) < 3 and len(history) == 0:
                 return "pronoun reference with no prior context", True
 
         # Rule 4: vague noun without domain specificity

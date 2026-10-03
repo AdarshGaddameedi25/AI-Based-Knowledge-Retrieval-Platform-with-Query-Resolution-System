@@ -112,6 +112,13 @@ DOMAIN_KEYWORDS = {
         "intellectual property", "patent", "trademark", "copyright", "gdpr",
         "hipaa", "privacy", "audit",
     },
+    "finance": {
+        "expense", "reimbursement", "budget", "procurement", "purchasing",
+        "invoice", "payment", "vendor", "purchase order", "credit card",
+        "corporate card", "financial", "accounting", "revenue", "profit",
+        "loss", "cash flow", "capital", "fiscal", "expenditure", "cost",
+        "billing", "receipt", "approval", "finance", "dso", "margin",
+    },
 }
 
 _STOP_WORDS = frozenset({

@@ -1,0 +1,257 @@
+CORPORATE FINANCE POLICY MANUAL
+Version 3.2 — Effective January 2026
+
+=======================================================================
+SECTION 1: EXPENSE REIMBURSEMENT POLICY
+=======================================================================
+
+1.1 PURPOSE AND SCOPE
+
+This policy establishes guidelines for reimbursement of business-related 
+expenses incurred by employees in the performance of their duties. All 
+employees who incur expenses on behalf of the organization are subject to 
+this policy.
+
+1.2 ELIGIBLE EXPENSES
+
+The following categories of expenses are eligible for reimbursement:
+
+TRAVEL EXPENSES
+- Airfare: Economy class for domestic flights; business class for 
+  international flights exceeding 6 hours
+- Hotel: Up to $250/night for standard cities; up to $350/night for 
+  high-cost cities (New York, San Francisco, London, Tokyo)
+- Ground transportation: Taxis, rideshares, rental cars at standard rates
+- Meals: Up to $75/day (breakfast $15, lunch $20, dinner $40)
+- Parking: Actual cost with receipt
+
+PROFESSIONAL DEVELOPMENT
+- Conference registration fees: Pre-approved by department head
+- Professional certifications: Up to $2,000 per year per employee
+- Books and technical subscriptions: Up to $500 per year
+
+OFFICE AND EQUIPMENT
+- Home office supplies: Up to $150 per quarter for remote employees
+- Software licenses: Approved by IT department
+- Equipment repairs: Pre-approved by facilities management
+
+1.3 INELIGIBLE EXPENSES
+
+The following expenses will NOT be reimbursed:
+- Personal entertainment (movies, sporting events, personal travel)
+- Alcoholic beverages (except during approved client entertainment)
+- Traffic fines, parking tickets, or other violations
+- First-class airfare upgrades (unless approved medical necessity)
+- Spouse or family member travel expenses
+
+1.4 SUBMISSION REQUIREMENTS
+
+All expense reimbursement requests must:
+- Be submitted within 30 days of incurring the expense
+- Include original receipts for all expenses over $25
+- Use the company's approved expense management system (ExpenseCloud)
+- Be approved by the employee's direct supervisor
+- Include business purpose and attendees for client entertainment
+
+1.5 APPROVAL THRESHOLDS
+
+- Up to $500: Direct supervisor approval
+- $500 to $2,000: Department head approval
+- $2,000 to $10,000: Finance department approval
+- Over $10,000: CFO approval required
+
+=======================================================================
+SECTION 2: BUDGET MANAGEMENT
+=======================================================================
+
+2.1 ANNUAL BUDGET CYCLE
+
+The annual budget cycle begins on October 1st each year:
+- October: Department budget requests submitted
+- November: Finance review and consolidation
+- December: Executive approval and finalization
+- January 1: New fiscal year budget takes effect
+
+2.2 BUDGET CATEGORIES
+
+Operating Budget: Day-to-day operational expenses including salaries,
+  supplies, software, and utilities.
+
+Capital Budget: Long-term investments in equipment, technology 
+  infrastructure, and facility improvements (assets over $5,000 
+  with useful life over 1 year).
+
+Project Budget: Discrete project funding with defined start/end dates 
+  and deliverables.
+
+2.3 BUDGET VARIANCES
+
+Budget variances exceeding 10% of allocated amounts require:
+- Written explanation of variance cause
+- Revised forecast for remainder of period
+- Action plan to return to budget (if overspent)
+- Department head sign-off
+
+Favorable variances over 15% must also be explained to ensure 
+accurate future forecasting.
+
+2.4 BUDGET TRANSFERS
+
+Budget transfers between line items within the same department:
+- Up to $1,000: Manager discretion
+- $1,000 to $5,000: Department head approval
+- Over $5,000: Finance director approval
+
+Cross-departmental transfers require Finance director approval 
+regardless of amount.
+
+=======================================================================
+SECTION 3: PROCUREMENT AND PURCHASING
+=======================================================================
+
+3.1 COMPETITIVE BIDDING REQUIREMENTS
+
+All purchases must follow competitive bidding requirements:
+- Under $2,500: Single quote acceptable
+- $2,500 to $10,000: Minimum two written quotes required
+- $10,000 to $50,000: Minimum three written quotes required
+- Over $50,000: Formal RFP (Request for Proposal) process required
+
+3.2 PREFERRED VENDORS
+
+The Finance department maintains a list of approved preferred vendors. 
+Purchasing from preferred vendors:
+- Eliminates need for competitive bidding under $10,000
+- Ensures contract and compliance pre-verification
+- Provides pre-negotiated pricing
+
+To add a vendor to the preferred list, submit a Vendor Registration 
+Form to the Finance department with:
+- Business registration documents
+- Insurance certificates
+- Tax identification number
+- Banking information for payment setup
+
+3.3 PURCHASE ORDERS
+
+All purchases over $1,000 require a Purchase Order (PO) before 
+commitment. Purchase Orders must include:
+- Vendor name and contact information
+- Detailed description of goods/services
+- Unit prices and total amount
+- Delivery terms and expected delivery date
+- Budget account code
+
+3.4 PAYMENT TERMS
+
+Standard payment terms are Net 30 (payment due within 30 days of 
+invoice receipt). Early payment discounts should be taken when 
+economically beneficial (e.g., 2/10 Net 30 means 2% discount if 
+paid within 10 days).
+
+Late payments may result in vendor penalties and are tracked by 
+the Finance department for vendor performance reviews.
+
+=======================================================================
+SECTION 4: FINANCIAL REPORTING
+=======================================================================
+
+4.1 INTERNAL REPORTING CALENDAR
+
+Monthly Reports (due by 5th business day of following month):
+- Department profit/loss statement
+- Budget vs. actual variance report
+- Headcount and labor cost report
+
+Quarterly Reports (due by 15th business day of quarter-end month):
+- Quarterly financial statements
+- Cash flow projection
+- Capital expenditure tracker
+
+Annual Reports (due by March 31st):
+- Audited financial statements
+- Annual budget vs. actual comparison
+- Three-year financial projection
+
+4.2 KEY FINANCIAL METRICS
+
+Finance tracks the following Key Performance Indicators (KPIs):
+- Revenue growth rate (target: 15% YoY)
+- Operating margin (target: 20% or higher)
+- Operating expense ratio (target: below 65% of revenue)
+- Days Sales Outstanding (DSO): target under 45 days
+- Current ratio (target: above 2.0)
+- Debt-to-equity ratio (target: below 0.5)
+
+4.3 FINANCIAL CONTROLS
+
+To maintain financial integrity:
+- Segregation of duties: No single employee controls authorization,
+  execution, and recording of financial transactions
+- Dual signature requirement for payments over $10,000
+- Monthly bank reconciliations
+- Quarterly internal audits by Finance team
+- Annual external audit by independent certified public accountants
+- Access controls: System access limited to job function requirements
+
+=======================================================================
+SECTION 5: CORPORATE CREDIT CARDS
+=======================================================================
+
+5.1 ELIGIBILITY
+
+Corporate credit cards are issued to:
+- Department heads and above (automatic eligibility)
+- Frequent travelers (4+ trips per year)
+- Employees with recurring business purchase needs (upon manager request)
+
+5.2 CREDIT LIMITS
+
+Standard card limits:
+- Individual contributor: $2,000 monthly limit
+- Manager: $5,000 monthly limit
+- Director: $10,000 monthly limit
+- VP and above: $25,000 monthly limit
+
+5.3 ACCEPTABLE USE
+
+Corporate cards must ONLY be used for:
+- Business travel and accommodation
+- Client entertainment (with prior approval)
+- Office supplies and equipment
+- Software and subscriptions
+- Conference and training fees
+
+5.4 PROHIBITED USE
+
+Corporate cards must NOT be used for:
+- Personal purchases of any kind
+- Cash advances
+- Gift cards (without Finance pre-approval)
+- Gambling or adult entertainment
+- Political contributions
+
+5.5 REPORTING AND RECONCILIATION
+
+Cardholders must:
+- Submit monthly expense reports within 5 days of statement close
+- Attach receipts for all transactions over $25
+- Provide business purpose for all transactions
+- Report lost or stolen cards immediately to Finance and card issuer
+
+Failure to submit timely reports may result in card suspension.
+
+=======================================================================
+SECTION 6: CONTACT INFORMATION
+=======================================================================
+
+Finance Department: finance@company.com
+Expense Reimbursement Questions: expenses@company.com
+Purchase Orders: purchasing@company.com
+Budget Questions: budget@company.com
+Corporate Cards: corporate.cards@company.com
+
+Finance Help Desk: Extension 4200 (Monday–Friday, 8 AM–5 PM)
+
+For urgent matters outside business hours, contact the CFO office
+at cfosupport@company.com.

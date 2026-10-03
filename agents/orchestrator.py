@@ -124,28 +124,41 @@ class AgentOrchestrator:
             # Use refined query for the rest of the pipeline
             query = refined_query
 
-        # ── Step 1: Query Understanding ────────────────────────────────────
-        analysis: QueryAnalysis = self._query_agent.analyze(query)
+        # ── Step 1: Memory resolution FIRST — resolve pronouns before QUA ──
+        #    Run memory resolution on the raw query so that QUA sees the
+        #    resolved text (e.g. "minimum wage") instead of "it".
+        #    This prevents QUA from flagging follow-up questions as ambiguous.
+        raw_resolved = memory.resolve_references(query)
+        pronoun_was_resolved_by_memory = (raw_resolved != query)
+        if pronoun_was_resolved_by_memory:
+            logger.info(
+                "[Orchestrator] Pre-QUA reference resolved: %r → %r",
+                query, raw_resolved,
+            )
+
+        # ── Step 2: Query Understanding (on resolved text) ─────────────────
+        analysis: QueryAnalysis = self._query_agent.analyze(raw_resolved)
+
+        # If memory resolved a pronoun AND QUA still classified it as ambiguous,
+        # override to factual — the reference is already resolved, no need to ask.
+        if pronoun_was_resolved_by_memory and analysis.query_type == QUERY_TYPE_AMBIGUOUS:
+            logger.info(
+                "[Orchestrator] Overriding QUA ambiguous→factual (pronoun resolved by memory)"
+            )
+            analysis.query_type = QUERY_TYPE_FACTUAL
+            analysis.detected_intent = QUERY_TYPE_FACTUAL
+            analysis.routing = ROUTING_RETRIEVAL
+            analysis.requires_retrieval = True
+
         logger.info(
             "[Orchestrator] query_type=%r routing=%r domain=%r requires_retrieval=%s",
             analysis.query_type, analysis.routing,
             analysis.suggested_domain, analysis.requires_retrieval,
         )
 
-        # ── Step 2: Resolve pronouns from conversation history ─────────────
-        memory_resolved_query = memory.resolve_references(analysis.normalized_query)
-        if memory_resolved_query != analysis.normalized_query:
-            logger.info(
-                "[Orchestrator] Reference resolved: %r → %r",
-                analysis.normalized_query, memory_resolved_query,
-            )
-            analysis.normalized_query = memory_resolved_query
-
-        # M3.2 — resolved_query holds the best query text for vector search:
-        # either the clarification-refined query (from Step 0) or the
-        # memory pronoun-resolved query (from Step 2 above).
-        # NOTE: always assign — avoids UnboundLocalError in clarification cycle.
-        resolved_query = refined_query if refined_query else memory_resolved_query
+        # resolved_query = the memory-resolved text used for vector search
+        memory_resolved_query = raw_resolved
+        resolved_query = refined_query if refined_query else raw_resolved
 
         # Determine whether prior memory context is being used
         used_memory_context = memory.is_topic_continuation(analysis.key_terms)
@@ -220,10 +233,27 @@ class AgentOrchestrator:
             )
 
         # Secondary clarification check (ClarificationAgent catches pronoun
-        # queries that slipped through QUA's ambiguity check)
-        clarification: ClarificationResult = self._clarification_agent.evaluate(
-            resolved_query, history, analysis.key_terms
+        # queries that slipped through QUA's ambiguity check).
+        #
+        # IMPORTANT: Skip this check if conversation memory already resolved a
+        # pronoun reference AND there is prior conversation history.
+        # This prevents follow-up questions like "How does it compare?" from
+        # being intercepted by the clarification agent when "it" was already
+        # resolved to a known entity (e.g. "minimum wage") by memory.
+        skip_clarification = pronoun_was_resolved_by_memory and len(history) > 0
+
+        clarification: ClarificationResult = (
+            ClarificationResult(is_ambiguous=False, clarification_question="", original_query=resolved_query)
+            if skip_clarification
+            else self._clarification_agent.evaluate(resolved_query, history, analysis.key_terms)
         )
+
+        if skip_clarification:
+            logger.info(
+                "[Orchestrator] Skipping clarification — memory resolved pronoun to %r",
+                resolved_query,
+            )
+
         if clarification.is_ambiguous:
             logger.info("[Orchestrator] Routing=clarification (ClarificationAgent)")
 
