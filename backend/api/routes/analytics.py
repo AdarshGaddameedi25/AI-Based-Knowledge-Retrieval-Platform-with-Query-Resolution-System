@@ -95,6 +95,7 @@ def get_analytics_domains(
 
 
 @router.get("/analytics/query-types")
+@router.get("/analytics/types")
 def get_analytics_query_types(
     days: int = QueryParam(default=30, ge=1, le=365),
     db: Session = Depends(get_db),
@@ -103,13 +104,15 @@ def get_analytics_query_types(
     Query count grouped by query_type (factual, procedural, comparative, ambiguous, direct).
     """
     try:
-        return {"query_types": analytics_service.get_query_type_distribution(db, days=days)}
+        dist = analytics_service.get_query_type_distribution(db, days=days)
+        return {"query_types": dist, "types": dist, "distributions": dist}
     except Exception as e:
         logger.error("Analytics query-types error: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to retrieve query type distribution.")
 
 
 @router.get("/analytics/knowledge-gaps")
+@router.get("/analytics/gaps")
 def get_analytics_knowledge_gaps(
     limit: int = QueryParam(default=20, ge=1, le=100),
     offset: int = QueryParam(default=0, ge=0),
@@ -124,13 +127,17 @@ def get_analytics_knowledge_gaps(
     Ordered by frequency (most frequent first).
     """
     try:
-        return analytics_service.get_knowledge_gaps(
+        res = analytics_service.get_knowledge_gaps(
             db,
             limit=limit,
             offset=offset,
             domain=domain,
             min_frequency=min_frequency,
         )
+        # Add alias key 'gaps' if 'records' is returned
+        if isinstance(res, dict) and "records" in res and "gaps" not in res:
+            res["gaps"] = res["records"]
+        return res
     except Exception as e:
         logger.error("Analytics knowledge-gaps error: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to retrieve knowledge gaps.")

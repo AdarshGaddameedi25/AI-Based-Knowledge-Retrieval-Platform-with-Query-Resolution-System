@@ -1,6 +1,6 @@
-CORPORATE FINANCE POLICY MANUAL
-Version 3.2 — Effective January 2026
-
+=======================================================================
+SAMPLE CORPORATE FINANCE POLICY MANUAL — FOR DEMONSTRATION ONLY
+AI-QRS Demonstration Dataset — Version 3.2
 =======================================================================
 SECTION 1: EXPENSE REIMBURSEMENT POLICY
 =======================================================================
