@@ -23,14 +23,15 @@ from sqlalchemy import func, desc, Integer as sa_Integer
 
 from backend.db.models import QueryAnalytics, KnowledgeGap
 
+from config.settings import settings
+
 logger = logging.getLogger(__name__)
 
-# Similarity threshold below which evidence is considered insufficient for a gap
-_GAP_SIMILARITY_THRESHOLD = 0.25
 # Max chunks that, combined with low similarity, still qualify as a gap
 _GAP_LOW_CHUNK_THRESHOLD = 1
 # Normalize query for deduplication (remove punctuation, lowercase, strip)
 _PUNCT_RE = re.compile(r"[^\w\s]")
+
 
 
 def _normalize_for_dedup(query: str) -> str:
@@ -152,16 +153,20 @@ class AnalyticsService:
         if retrieval_count == 0:
             return True, "no_chunks_retrieved"
 
-        # Rule B: Best score below configured threshold
-        if best_score is not None and best_score < _GAP_SIMILARITY_THRESHOLD:
+        # Rule B: Best score below configured knowledge gap threshold
+        if best_score is not None and best_score < settings.knowledge_gap_threshold:
             return True, "below_similarity_threshold"
 
-        # Rule D: Response status explicitly marked as gap
+        # Rule C: Response status explicitly marked as gap
         if response_status == "knowledge_gap":
             return True, "response_marked_as_gap"
 
         # Rule D: Very low chunk count combined with low similarity
-        if retrieval_count <= _GAP_LOW_CHUNK_THRESHOLD and best_score is not None and best_score < 0.35:
+        if (
+            retrieval_count <= _GAP_LOW_CHUNK_THRESHOLD
+            and best_score is not None
+            and best_score < settings.low_confidence_threshold
+        ):
             return True, "low_evidence_low_confidence"
 
         return False, None

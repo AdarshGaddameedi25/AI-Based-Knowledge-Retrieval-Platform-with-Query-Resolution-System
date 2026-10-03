@@ -1018,3 +1018,52 @@ class TestQUARegressions:
     def test_procedural_still_classified(self):
         result = self.agent.analyze("How do I submit an expense report?")
         assert result.query_type == QUERY_TYPE_PROCEDURAL
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# M4 — THRESHOLD CONFIGURATION & BENCHMARK METHODOLOGY TESTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestThresholdConfigurationAndBenchmark:
+
+    def test_dynamic_knowledge_gap_threshold_behavior(self):
+        """Verify analytics service reads settings.knowledge_gap_threshold dynamically."""
+        from backend.services.analytics_service import AnalyticsService
+        from config.settings import settings
+
+        service = AnalyticsService()
+        
+        orig_thresh = settings.knowledge_gap_threshold
+        try:
+            settings.knowledge_gap_threshold = 0.30
+            is_gap, reason = service._detect_gap("retrieval", retrieval_count=3, best_score=0.22, response_status="answered")
+            assert is_gap is True
+            assert reason == "below_similarity_threshold"
+
+            settings.knowledge_gap_threshold = 0.15
+            is_gap, reason = service._detect_gap("retrieval", retrieval_count=3, best_score=0.22, response_status="answered")
+            assert is_gap is False
+        finally:
+            settings.knowledge_gap_threshold = orig_thresh
+
+    def test_benchmark_dataset_loads_repository_documents(self):
+        """Verify retrieval experiment script loads real repository document files."""
+        from scripts.run_retrieval_experiment import load_repository_documents, BENCHMARK_DATASET
+        docs = load_repository_documents()
+        assert len(docs) == 5
+        assert "leave_policy.txt" in docs
+        assert "cloud_security.txt" in docs
+        assert "finance_policy.txt" in docs
+        assert len(BENCHMARK_DATASET) == 15
+
+    def test_benchmark_relevance_checker(self):
+        """Verify global chunk relevance checking logic."""
+        from scripts.run_retrieval_experiment import is_chunk_relevant
+        item = {
+            "is_answerable": True,
+            "expected_document": "finance_policy.txt",
+            "expected_keywords": ["$250", "hotel"],
+        }
+        chunk_text = "Corporate travel hotel reimbursement limit is $250 per night."
+        assert is_chunk_relevant(chunk_text, "finance_policy.txt", item) is True
+        assert is_chunk_relevant(chunk_text, "other_doc.txt", item) is False
